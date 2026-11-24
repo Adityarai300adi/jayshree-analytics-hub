@@ -1,24 +1,25 @@
+
 services:
   - type: web
     name: jayshree-analytics-hub
     runtime: python
-    plan: starter
+    plan: free
+
     buildCommand: pip install -r requirements.txt
     startCommand: python app.py
-    disk:
-      name: hub-data
-      mountPath: /var/data
-      sizeGB: 1
+
     envVars:
       - key: JP_HOST
         value: 0.0.0.0
-      - key: JP_DATA_DIR
-        value: /var/data
-      - key: JP_CONFIG
-        value: /var/data/config.ini
+
       - key: JP_COOKIE_SECURE
         value: "true"
+
       - key: JP_REGISTRATION
         value: "off"
+
+      - key: JP_OPEN_BROWSER
+        value: "0"
+
       - key: JP_ADMIN_PASSWORD
         sync: false
