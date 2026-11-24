@@ -1052,10 +1052,13 @@ if __name__ == "__main__":
             f.write("\n".join(urls) + "\n")
     except OSError:
         pass
-    if os.environ.get("JP_OPEN_BROWSER", "1") == "1":  # open the dashboard on the host PC
+
+    # Automatically open the browser only when explicitly enabled.
+    if os.environ.get("JP_OPEN_BROWSER", "0") == "1":
         import threading
         import webbrowser
         threading.Timer(1.5, lambda: webbrowser.open(urls[0])).start()
+
     try:
         from waitress import serve
         serve(app, host=host, port=port, threads=8, max_request_body_size=MAX_MB * 1024 * 1024)
