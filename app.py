@@ -5,6 +5,9 @@ password-protected workbook unlocking.
 
 Workbooks are NEVER stored. The browser reads the Excel file you pick and builds the
 dashboard from it (static/index.html); the server only keeps who analyzed which file name.
+
+NEW: Email OTP (any email address) via the Brevo HTTPS API, in addition to Google / mobile OTP.
+Render env variables for it: JP_BREVO_API_KEY and JP_MAIL_FROM.
 """
 import base64
 import configparser
@@ -450,10 +453,11 @@ def reset_password(uid):
     return jsonify(ok=True)
 
 
-# ---------------------------------------------------------------- accounts: Google + mobile OTP (Firebase)
+# ---------------------------------------------------------------- accounts: Google + mobile OTP (Firebase) + email OTP (Brevo)
 # The browser signs the person in with Google (proves an email address) or with an SMS code that Google/Firebase
 # sends (proves a mobile number). Firebase returns a signed "ID token"; this server checks its signature with
 # Google's public keys and only then trusts the email / mobile number inside it.
+# Email OTP: the server emails a 6-digit code (any email provider works) and checks it here.
 USERNAME_RE = re.compile(r"[A-Za-z0-9_.-]{3,32}")
 EMAIL_RE = re.compile(r"[^@\s]{1,64}@[^@\s]{1,190}\.[A-Za-z]{2,}")
 FIREBASE_CERTS_URL = os.environ.get(
@@ -654,8 +658,58 @@ def contact_from_claims(claims):
     raise TokenError("This sign-in does not prove an email address or a mobile number.")
 
 
-def _verified_contact(body):
+# ---- Email OTP (works for ANY email address; mail is sent through Brevo's HTTPS API)
+def email_otp_enabled():
+    return bool(os.environ.get("JP_BREVO_API_KEY", "").strip() and os.environ.get("JP_MAIL_FROM", "").strip())
+
+
+def _hash_otp(email, code):
+    return hmac.new(app.config["SECRET_KEY"].encode(), f"{email}:{code}".encode(), hashlib.sha256).hexdigest()
+
+
+def send_email(to, subject, text):
+    api_key = os.environ.get("JP_BREVO_API_KEY", "").strip()
+    sender = os.environ.get("JP_MAIL_FROM", "").strip()
+    if not api_key or not sender:
+        raise TokenError("Email sending is not set up yet. The owner must set JP_BREVO_API_KEY and JP_MAIL_FROM.")
+    payload = json.dumps({"sender": {"name": "Jayshree Analytics Hub", "email": sender},
+                          "to": [{"email": to}], "subject": subject, "textContent": text}).encode()
+    req = urllib.request.Request("https://api.brevo.com/v3/smtp/email", data=payload, method="POST",
+                                 headers={"api-key": api_key, "content-type": "application/json",
+                                          "accept": "application/json"})
     try:
+        urllib.request.urlopen(req, timeout=15).close()
+    except (urllib.error.URLError, OSError) as exc:
+        app.logger.warning("Brevo email failed: %s", exc)
+        raise TokenError("Could not send the email. Please try again later.") from exc
+
+
+def check_email_otp(email, code):
+    key = "eotp:" + email
+    data = _pending_get(key)
+    if data is None or data["exp"] < time.time():
+        raise TokenError("The code has expired. Please request a new one.")
+    if data["tries"] >= 5:
+        db().execute("DELETE FROM pending WHERE token = ?", (key,))
+        db().commit()
+        raise TokenError("Too many wrong attempts. Please request a new code.")
+    if not hmac.compare_digest(data["h"], _hash_otp(email, str(code).strip())):
+        data["tries"] += 1
+        _pending_put(key, data)
+        raise TokenError("The code is wrong.")
+    db().execute("DELETE FROM pending WHERE token = ?", (key,))
+    db().commit()
+
+
+def _verified_contact(body):
+    """Accepts either {id_token} (Google / SMS via Firebase) or {email, email_otp} (emailed code)."""
+    try:
+        if body.get("email_otp"):
+            email = norm_email(body.get("email"))
+            if not email:
+                raise TokenError("Enter a valid email address.")
+            check_email_otp(email, body["email_otp"])
+            return ("email", email), None
         return contact_from_claims(verify_firebase_token(str(body.get("id_token", "")))), None
     except TokenError as exc:
         return None, err(str(exc), 503 if "not set up" in str(exc) else 400)
@@ -758,10 +812,30 @@ def _pending_reply(token, data):
 @app.get("/api/public-config")
 def public_config():
     return jsonify(setup_needed=not _users_exist(), allow_signup=get_setting("allow_signup") == "1",
-                   firebase=firebase_config(), default_cc=get_setting("default_cc"))
+                   firebase=firebase_config(), default_cc=get_setting("default_cc"),
+                   email_otp=email_otp_enabled())
 
 
-# ---- Continue with Google / mobile OTP on the sign-in page: signs in a known person, or starts registration
+# ---- Email OTP: send a 6-digit code to any email address
+@app.post("/api/email-otp/send")
+def email_otp_send():
+    b = request.get_json(silent=True) or {}
+    email = norm_email(b.get("email"))
+    if not email:
+        return err("Enter a valid email address.")
+    if not _rate_ok("eo-ip:" + (request.remote_addr or "?"), 10, 3600) or not _rate_ok("eo:" + email, 3, 3600):
+        return err("Too many codes requested. Try again later.", 429)
+    code = f"{secrets.randbelow(1000000):06d}"
+    try:
+        send_email(email, "Your Jayshree Analytics Hub code",
+                   f"Your verification code is {code}. It is valid for 10 minutes. Do not share it with anyone.")
+    except TokenError as exc:
+        return err(str(exc), 503)
+    _pending_put("eotp:" + email, {"h": _hash_otp(email, code), "tries": 0, "exp": time.time() + 600})
+    return jsonify(ok=True)
+
+
+# ---- Continue with Google / mobile OTP / email OTP on the sign-in page: signs in a known person, or starts registration
 @app.post("/api/firebase/login")
 def firebase_login():
     if not _rate_ok("fbl:" + (request.remote_addr or "?"), 40, 3600):
@@ -775,7 +849,7 @@ def firebase_login():
     if user:
         _login_session(user)
         return jsonify(user_json(user))
-    label = "Google account" if channel == "email" else "mobile number"
+    label = "email address" if channel == "email" else "mobile number"
     if _user_by_contact(channel, value, verified_only=False):
         return err(f"This {label} is on an account that is not verified yet. Sign in with your username and password, "
                    "then verify it in My profile.", 409)
@@ -788,7 +862,7 @@ def firebase_login():
     return jsonify(new=True, **_pending_reply(token, data))
 
 
-# ---- registration: 1) verify email (Google) and/or mobile (SMS code)  2) choose username + password  3) sign in
+# ---- registration: 1) verify email (Google / emailed code) and/or mobile (SMS code)  2) choose username + password  3) sign in
 @app.post("/api/signup/verify")
 def signup_verify():
     if not _rate_ok("reg:" + (request.remote_addr or "?"), 40, 3600):
@@ -801,7 +875,7 @@ def signup_verify():
     setup = not _users_exist()
     if not setup and get_setting("allow_signup") != "1":
         return err("Registration is closed. Please contact the administrator.", 403)
-    label = "Google account" if channel == "email" else "mobile number"
+    label = "email address" if channel == "email" else "mobile number"
     if _user_by_contact(channel, value, verified_only=False):
         return err(f"This {label} is already registered. Please sign in.", 409)
     token = str(b.get("ptoken", ""))
@@ -817,7 +891,7 @@ def signup_create():
     token = str(b.get("ptoken", ""))
     data = _pending_get(token)
     if data is None or not (data["email"] or data["phone"]):
-        return err("Please verify your Google account or mobile number first.", 400)
+        return err("Please verify your email address or mobile number first.", 400)
     username, password = str(b.get("username", "")).strip(), str(b.get("password", ""))
     if password != str(b.get("confirm_password", "")):
         return err("The two passwords do not match.")
@@ -846,7 +920,7 @@ def signup_create():
     return jsonify(ok=True, username=username), 201  # the person now signs in with the new username and password
 
 
-# ---- forgot password: prove the email (Google) or mobile (SMS code), then choose a new username/password
+# ---- forgot password: prove the email (Google / emailed code) or mobile (SMS code), then choose a new username/password
 @app.post("/api/forgot/verify")
 def forgot_verify():
     if not _rate_ok("fp:" + (request.remote_addr or "?"), 30, 3600):
@@ -858,7 +932,7 @@ def forgot_verify():
     channel, value = contact
     user = _user_by_contact(channel, value)
     if user is None:
-        return err("No account uses this " + ("Google account." if channel == "email" else "mobile number."), 404)
+        return err("No account uses this " + ("email address." if channel == "email" else "mobile number."), 404)
     return jsonify(ok=True, token=_signer.dumps({"uid": user["id"], "pv": user["pwd_version"]}), username=user["username"])
 
 
@@ -901,7 +975,7 @@ def profile():
 @app.post("/api/profile/contact")
 @login_required
 def profile_contact():
-    """Add or confirm an email (Google) or mobile number (SMS code) for the signed-in person."""
+    """Add or confirm an email (Google / emailed code) or mobile number (SMS code) for the signed-in person."""
     b = request.get_json(silent=True) or {}
     contact, bad = _verified_contact(b)
     if bad:
@@ -910,7 +984,7 @@ def profile_contact():
     col = "email" if channel == "email" else "phone"
     other = db().execute(f"SELECT id FROM users WHERE {col} = ? AND id != ?", (value, g.user["id"])).fetchone()
     if other:
-        return err("This " + ("Google account" if channel == "email" else "mobile number") + " belongs to another account.", 409)
+        return err("This " + ("email address" if channel == "email" else "mobile number") + " belongs to another account.", 409)
     db().execute(f"UPDATE users SET {col} = ?, {col}_verified = 1 WHERE id = ?", (value, g.user["id"]))
     db().commit()
     return jsonify(ok=True, channel=channel, value=value)
@@ -1042,6 +1116,7 @@ if __name__ == "__main__":
         print("  Google / mobile verification is NOT set up yet: open config.ini, follow the steps at the top, save, refresh the website.")
     else:
         print("  Google sign-in and mobile OTP only work when you open the website as http://localhost:%d (or on your own https:// domain)." % port)
+    print("  Email OTP: " + ("ready (Brevo)." if email_otp_enabled() else "NOT set up (set JP_BREVO_API_KEY and JP_MAIL_FROM)."))
     _c = sqlite3.connect(DB_PATH)
     if _c.execute("SELECT COUNT(*) FROM users").fetchone()[0] == 0:
         print("  FIRST TIME: open the address above and create your administrator account on the website.")
