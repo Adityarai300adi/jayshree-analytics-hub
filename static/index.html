@@ -79,6 +79,7 @@ details.card>summary{cursor:pointer;font-weight:700;list-style:none}details.card
 .gbtn{background:#fff;color:#1f1f1f;border:1px solid #dadce0;display:flex;align-items:center;justify-content:center;gap:10px;font-weight:600}
 .or{display:flex;align-items:center;gap:10px;color:var(--mu);font-size:13px}.or::before,.or::after{content:"";flex:1;height:1px;background:var(--bd)}
 #recaptcha-box{position:fixed;right:0;bottom:0}
+.done{display:none!important}
 </style></head><body>
 
 <div id="login"><div class="authwrap">
@@ -226,6 +227,25 @@ async function googleToken(){const a=await fbInit();const r=await a.signInWithPo
 async function withGoogle(btn,msgSel,onToken){note(msgSel,'');busy(btn,1);try{await onToken(await googleToken())}catch(e){note(msgSel,fbError(e))}busy(btn,0)}
 const phoneHtml=p=>`<div id="${p}-p1"><label>Mobile number<input id="${p}-ph" type="tel" autocomplete="tel" placeholder="98765 43210"></label><button type="button" class="btn" id="${p}-psend" style="margin-top:8px">Send OTP</button></div><div id="${p}-p2" hidden><label>Enter the 6-digit OTP<input id="${p}-pcode" inputmode="numeric" maxlength="6" autocomplete="one-time-code" placeholder="123456"></label><div class="row" style="justify-content:flex-start;margin:8px 0 0"><button type="button" class="btn" id="${p}-pverify">Verify OTP</button><button type="button" class="btn" id="${p}-presend" style="background:var(--mu)" disabled>Resend OTP</button></div></div><div class="err" id="${p}-pmsg"></div>`;
 document.querySelectorAll('[data-phone]').forEach(d=>d.innerHTML=phoneHtml(d.dataset.phone));
+/* ---------- Email OTP (any email address; the code is emailed by the server) ---------- */
+const tk=t=>typeof t==='string'?{id_token:t}:t;
+const emailHtml=p=>`<div id="${p}-e1"><label>Email address<input id="${p}-em" type="email" autocomplete="email" placeholder="you@example.com"></label><button type="button" class="btn" id="${p}-esend" style="margin-top:8px">Send code to email</button></div><div id="${p}-e2" hidden><label>Enter the 6-digit code from your email<input id="${p}-ecode" inputmode="numeric" maxlength="6" autocomplete="one-time-code" placeholder="123456"></label><div class="row" style="justify-content:flex-start;margin:8px 0 0"><button type="button" class="btn" id="${p}-everify">Verify code</button><button type="button" class="btn" id="${p}-eresend" style="background:var(--mu)" disabled>Resend code</button></div></div><div class="err" id="${p}-emsg"></div>`;
+const ewrap=p=>`<div data-email-wrap id="${p}-ewrap" hidden><div class="or"><span>or</span></div><div data-email="${p}"></div></div>`;
+$('#lgoogle').insertAdjacentHTML('afterend',ewrap('l'));
+$('#rgoogle').insertAdjacentHTML('afterend',ewrap('r'));
+$('#fgoogle').insertAdjacentHTML('afterend',ewrap('f'));
+$('#pgoogle').closest('.row').insertAdjacentHTML('afterend','<div data-email-wrap id="p-ewrap" hidden style="margin-top:8px"><div data-email="p"></div></div>');
+document.querySelectorAll('[data-email]').forEach(d=>d.innerHTML=emailHtml(d.dataset.email));
+function wireEmail(p,onToken){
+ const q=id=>$('#'+p+'-'+id),m='#'+p+'-emsg';let tmr=null,email='';
+ const cool=sec=>{clearInterval(tmr);const b=q('eresend');let s=sec;const tick=()=>{b.textContent=s>0?'Resend code in '+s+'s':'Resend code';b.disabled=s>0;if(s<=0)clearInterval(tmr);s--};tick();tmr=setInterval(tick,1000)};
+ const back=()=>{q('e1').hidden=false;q('e2').hidden=true;clearInterval(tmr)};
+ const send=async()=>{note(m,'');email=q('em').value.trim().toLowerCase();if(!/^[^@\s]+@[^@\s]+\.[A-Za-z]{2,}$/.test(email))return note(m,'Enter a valid email address.');busy(q('esend'),1);
+  try{await jpost('/api/email-otp/send',{email});q('e1').hidden=true;q('e2').hidden=false;q('ecode').value='';q('ecode').focus();note(m,'A code was sent to '+email+'. Check your inbox and spam folder.',1);cool(60)}catch(e){note(m,e.message)}busy(q('esend'),0)};
+ q('esend').onclick=send;q('eresend').onclick=send;
+ q('everify').onclick=async()=>{note(m,'');const code=q('ecode').value.trim();if(!/^\d{6}$/.test(code))return note(m,'Enter the 6-digit code.');busy(q('everify'),1);
+  try{await onToken({email,email_otp:code});back();q('em').value='';note(m,'')}catch(e){note(m,e.message)}busy(q('everify'),0)}}
+
 function wirePhone(p,onToken){
  const q=id=>$('#'+p+'-'+id),m='#'+p+'-pmsg';let tries=0,tmr=null;
  const cool=sec=>{clearInterval(tmr);const b=q('presend');let s=sec;const tick=()=>{b.textContent=s>0?'Resend OTP in '+s+'s':'Resend OTP';b.disabled=s>0;if(s<=0)clearInterval(tmr);s--};tick();tmr=setInterval(tick,1000)};
@@ -244,7 +264,7 @@ const note=(sel,text,ok)=>{const e=$(sel);e.style.color=ok?'var(--ac)':'';e.text
 const busy=(b,on)=>{b.disabled=on};
 let CFG={},setupMode=false;
 async function loadCfg(keep){try{CFG=await api('/api/public-config')}catch(e){CFG={}}
- $('#reg-wrap').hidden=!CFG.allow_signup;document.querySelectorAll('.nofb').forEach(n=>n.hidden=!!CFG.firebase);
+ $('#reg-wrap').hidden=!CFG.allow_signup;document.querySelectorAll('[data-email-wrap]').forEach(n=>n.hidden=!CFG.email_otp);document.querySelectorAll('.nofb').forEach(n=>n.hidden=!!CFG.firebase);
  if(keep)return;
  if(CFG.setup_needed)startRegister(true);else view('lf')}
 async function login(){note('#le','');const b=$('#lb');busy(b,1);try{enter(await jpost('/api/login',{username:$('#lu').value.trim(),password:$('#lp').value}))}catch(e){note('#le',e.message)}busy(b,0)}
@@ -253,21 +273,21 @@ $('#lb').onclick=login;$('#lp').onkeydown=e=>{if(e.key==='Enter')login()};
 $('#out').onclick=async()=>{try{await jpost('/api/logout',{})}catch(e){}location.reload()};
 document.querySelectorAll('[data-back]').forEach(a=>a.onclick=e=>{e.preventDefault();view('lf');note('#le','')});
 // sign in page: Continue with Google, or mobile OTP
-async function fbLogin(token){const r=await jpost('/api/firebase/login',{id_token:token});if(r.new){startRegister(r.kind==='setup');rApply(r);rStep(3);return}enter(r)}
+async function fbLogin(token){const r=await jpost('/api/firebase/login',{...tk(token)});if(r.new){startRegister(r.kind==='setup');rApply(r);rStep(3);return}enter(r)}
 $('#lgoogle').onclick=()=>withGoogle($('#lgoogle'),'#le',fbLogin);
 $('#l-mobile').onclick=e=>{e.preventDefault();$('#l-box').hidden=!$('#l-box').hidden};
-wirePhone('l',fbLogin);
+wirePhone('l',fbLogin);wireEmail('l',fbLogin);
 // register: 1) verify Google email and/or mobile OTP  2) choose username + password  3) sign in
 let ptok=null;
 const rStep=n=>{$('#r1').hidden=n!==1;$('#r3').hidden=n!==3};
 function rApply(r){ptok=r.ptoken||null;const bits=[];if(r.email)bits.push('Google account '+r.email);if(r.phone)bits.push('mobile '+r.phone);
  const txt=bits.length?'Verified: '+bits.join(' and '):'';$('#rver').textContent=txt;$('#rver3').textContent=txt;$('#rver').hidden=!bits.length;$('#rnext').hidden=!bits.length;
- $('#rgoogle').hidden=!!r.email;$('#r-box').hidden=!!r.phone;$('#r-or').hidden=!!(r.email||r.phone)}
+ $('#rgoogle').hidden=!!r.email;{const ew=$('#r-ewrap');if(ew)ew.classList.toggle('done',!!r.email)}$('#r-box').hidden=!!r.phone;$('#r-or').hidden=!!(r.email||r.phone)}
 function startRegister(setup){setupMode=!!setup;$('#rtitle').textContent=setup?'Create the administrator account':'Register';$('#rback').hidden=!!setup;rApply({});note('#re','');rStep(1);view('rf')}
-const rVerify=async t=>rApply(await jpost('/api/signup/verify',{id_token:t,ptoken:ptok}));
+const rVerify=async t=>rApply(await jpost('/api/signup/verify',{...tk(t),ptoken:ptok}));
 $('#reg-link').onclick=e=>{e.preventDefault();startRegister(false)};
 $('#rgoogle').onclick=()=>withGoogle($('#rgoogle'),'#re',rVerify);
-wirePhone('r',rVerify);
+wirePhone('r',rVerify);wireEmail('r',rVerify);
 $('#rnext').onclick=e=>{e.preventDefault();rStep(3);$('#ru').focus()};
 $('#r3back').onclick=e=>{e.preventDefault();rStep(1)};
 $('#rcreate').onclick=async()=>{note('#re3','');if($('#rp').value!==$('#rp2').value)return note('#re3','The two passwords do not match.');busy($('#rcreate'),1);
@@ -276,10 +296,10 @@ $('#rcreate').onclick=async()=>{note('#re3','');if($('#rp').value!==$('#rp2').va
 // forgot password: Google or mobile OTP -> new username + password
 let ftok=null;
 const fShow=n=>{$('#fs1').hidden=n!==1;$('#fs3').hidden=n!==3};
-async function fVerified(token){const r=await jpost('/api/forgot/verify',{id_token:token});ftok=r.token;$('#fnu').value=r.username;fShow(3)}
+async function fVerified(token){const r=await jpost('/api/forgot/verify',{...tk(token)});ftok=r.token;$('#fnu').value=r.username;fShow(3)}
 $('#fg').onclick=e=>{e.preventDefault();fShow(1);view('ff')};
 $('#fgoogle').onclick=()=>withGoogle($('#fgoogle'),'#fe',fVerified);
-wirePhone('f',fVerified);
+wirePhone('f',fVerified);wireEmail('f',fVerified);
 $('#fsave').onclick=async()=>{note('#fe3','');if($('#fnp').value!==$('#fnp2').value)return note('#fe3','The two passwords do not match.');
  try{const r=await jpost('/api/forgot/reset',{token:ftok,new_username:$('#fnu').value.trim(),new_password:$('#fnp').value,confirm_password:$('#fnp2').value});note('#fe3','Saved. You can sign in with your new details.',1);
   setTimeout(()=>{$('#lu').value=r.username;$('#lp').value='';['#fnp','#fnp2'].forEach(s=>$(s).value='');view('lf');note('#le','Username and password changed. Please sign in.',1)},1400)}catch(e){note('#fe3',e.message)}};
@@ -296,9 +316,9 @@ async function renderProfile(){let p;try{p=await api('/api/profile')}catch(e){re
  $('#pf-user').textContent='Signed in as '+p.username+' ('+p.role+')';$('#pnu').value=p.username;
  const v=(has,ok)=>has?esc(has)+(ok?' <span class="bd">verified</span>':' <span class="bd l">not verified</span>'):'\u2014';
  $('#pem-view').innerHTML=v(p.email,p.email_verified);$('#pph-view').innerHTML=v(p.phone,p.phone_verified);$('#pem-rm').hidden=!p.email;$('#pph-rm').hidden=!p.phone}
-const addContact=async(t,what)=>{await jpost('/api/profile/contact',{id_token:t});await renderProfile();note('#pmsg',what+' verified.',1)};
+const addContact=async(t,what)=>{await jpost('/api/profile/contact',{...tk(t)});await renderProfile();note('#pmsg',what+' verified.',1)};
 $('#pgoogle').onclick=()=>withGoogle($('#pgoogle'),'#pmsg',t=>addContact(t,'Email'));
-wirePhone('p',t=>addContact(t,'Mobile number'));
+wirePhone('p',t=>addContact(t,'Mobile number'));wireEmail('p',t=>addContact(t,'Email'));
 const rmContact=async ch=>{note('#pmsg','');try{await jpost('/api/profile/contact/remove',{channel:ch});await renderProfile()}catch(e){note('#pmsg',e.message)}};
 $('#pem-rm').onclick=()=>rmContact('email');$('#pph-rm').onclick=()=>rmContact('sms');
 $('#pnu-ok').onclick=async()=>{note('#pnu-m','');try{const r=await jpost('/api/profile/username',{new:$('#pnu').value.trim(),password:$('#pnu-pw').value});me.username=r.username;$('#who').textContent=r.username+' ('+me.role+')';$('#pnu-pw').value='';note('#pnu-m','Username changed.',1)}catch(e){note('#pnu-m',e.message)}};
