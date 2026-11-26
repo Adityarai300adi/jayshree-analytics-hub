@@ -55,3 +55,47 @@ main{padding-top:28px}
 .drop{border-radius:18px}
 .bd{border-radius:7px}
 @media (max-width:640px){.hero{padding:22px}.hero h2{font-size:24px}.kpi .v{font-size:27px}}
+
+/* =====================  MOTION: login + upload  ===================== */
+@property --a{syntax:'<angle>';initial-value:0deg;inherits:false}
+@keyframes rise{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
+@keyframes drift{to{transform:translate(90px,70px) scale(1.15)}}
+@keyframes grow{from{transform:scaleY(.3)}to{transform:scaleY(1)}}
+@keyframes spin{to{--a:360deg}}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}
+@keyframes halo{0%,100%{opacity:.35;transform:translate(-50%,-50%) scale(.9)}50%{opacity:.8;transform:translate(-50%,-50%) scale(1.12)}}
+@keyframes step{0%,100%{background:color-mix(in srgb,var(--ac) 12%,var(--card));color:var(--ac)}12%,30%{background:var(--ac);color:#fff}42%{background:color-mix(in srgb,var(--ac) 12%,var(--card));color:var(--ac)}}
+/* login: hero */
+.lg-hero::before,.lg-hero::after{content:"";position:absolute;border-radius:50%;pointer-events:none;filter:blur(30px)}
+.lg-hero::before{width:520px;height:520px;top:-160px;left:-140px;background:radial-gradient(circle,#35d2b05a,transparent 65%);animation:drift 15s ease-in-out infinite alternate}
+.lg-hero::after{width:460px;height:460px;bottom:-140px;right:-120px;background:radial-gradient(circle,#f2a20c40,transparent 65%);animation:drift 19s ease-in-out infinite alternate-reverse}
+.strand{animation-duration:6s}.strand.b{animation-duration:8s}.strand.c{animation-duration:11s}
+.bars{display:block;width:132px;height:70px;margin-bottom:26px;overflow:visible}
+.bars rect{fill:#35d2b0;transform-box:fill-box;transform-origin:50% 100%;animation:grow 2.2s ease-in-out infinite alternate}
+.bars rect:nth-child(2){animation-delay:.25s}.bars rect:nth-child(3){animation-delay:.5s;fill:#f2a20c}
+.bars rect:nth-child(4){animation-delay:.75s}.bars rect:nth-child(5){animation-delay:1s}.bars rect:nth-child(6){animation-delay:1.25s;fill:#fff}
+.lg-copy h2{animation:rise .9s .2s cubic-bezier(.2,.7,.2,1) both}
+.lg-copy p{animation:rise .9s .38s cubic-bezier(.2,.7,.2,1) both}
+.lg-copy li{animation:rise .8s cubic-bezier(.2,.7,.2,1) both}
+.lg-copy li:nth-child(1){animation-delay:.55s}.lg-copy li:nth-child(2){animation-delay:.67s}.lg-copy li:nth-child(3){animation-delay:.79s}
+/* login: form side */
+.authwrap>*{animation:rise .75s cubic-bezier(.2,.7,.2,1) both}
+.authwrap>.brandline{animation-delay:.1s}.authwrap>.lg{animation-delay:.22s}
+.lg .btn:not(.gbtn){position:relative;overflow:hidden}
+.lg .btn:not(.gbtn)::after{content:"";position:absolute;top:0;bottom:0;left:-60%;width:40%;background:linear-gradient(100deg,transparent,#ffffff55,transparent);transform:skewX(-20deg);transition:left .6s}
+.lg .btn:not(.gbtn):hover::after{left:130%}
+.gbtn{transition:box-shadow .2s,transform .15s}.gbtn:hover{box-shadow:0 8px 20px -10px #0006}
+/* upload page */
+#app main>section{animation:rise .5s cubic-bezier(.2,.7,.2,1) both}
+.drop{position:relative;overflow:hidden;border:2px solid transparent;padding:64px 20px;
+ background:linear-gradient(color-mix(in srgb,var(--ac) 5%,var(--card)),var(--card)) padding-box,conic-gradient(from var(--a),var(--ac),var(--ac2),var(--ac3),var(--ac4),var(--ac)) border-box;animation:spin 7s linear infinite}
+.drop:hover,.drop.over{border-color:transparent;background:linear-gradient(color-mix(in srgb,var(--ac) 12%,var(--card)),var(--card)) padding-box,conic-gradient(from var(--a),var(--ac),var(--ac2),var(--ac3),var(--ac4),var(--ac)) border-box;animation-duration:2.5s}
+.drop.over{transform:scale(1.015);box-shadow:0 0 0 6px color-mix(in srgb,var(--ac) 18%,transparent)}
+.drop::before{content:"";position:absolute;left:50%;top:80px;width:150px;height:150px;border-radius:50%;background:radial-gradient(circle,color-mix(in srgb,var(--ac) 38%,transparent),transparent 68%);transform:translate(-50%,-50%);animation:halo 3s ease-in-out infinite;pointer-events:none}
+.drop>*{position:relative}
+.drop svg{width:52px;height:52px;animation:bob 2.6s ease-in-out infinite}
+.drop:hover svg{animation-duration:1.2s}
+.uphero h2{font-size:32px;letter-spacing:-.02em}
+.steps span{animation:step 7.5s ease-in-out infinite}
+.steps span:nth-child(2){animation-delay:2.5s}.steps span:nth-child(3){animation-delay:5s}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
