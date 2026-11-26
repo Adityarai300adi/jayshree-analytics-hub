@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Jayshree Polymers India – Analytics Hub</title>
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);--bg:#f1f5f4;--card:#fff;--tx:#0f1f1b;--mu:#5a6c66;--bd:#dce6e2;--ac:#0d7a68;--ac2:#f2a20c;--ac3:#2f6fe4;--ac4:#8b5cf6;--ac5:#e0524d;--hd:#082a25;--hdt:#e9f6f2;--sh:0 1px 2px rgba(8,42,37,.05),0 10px 30px rgba(8,42,37,.07);--hero:linear-gradient(120deg,#0a3b33,#0d7a68 70%,#17a38a)}
+html{scroll-padding-top:env(safe-area-inset-top,0px);height:100%}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){color-scheme:dark;--bg:#0a1210;--card:#111c19;--tx:#e6f2ee;--mu:#8ea89f;--bd:#1f312b;--ac:#35d2b0;--ac2:#fbbf24;--ac3:#6aa0ff;--ac4:#a78bfa;--ac5:#f87171;--hd:#07110f;--hdt:#e6f2ee;--sh:0 1px 2px #0006,0 10px 30px #0005;--hero:linear-gradient(120deg,#0b3a32,#0f6b5b 70%,#13917a)}}
+:root[data-theme="dark"]{color-scheme:dark;--bg:#0a1210;--card:#111c19;--tx:#e6f2ee;--mu:#8ea89f;--bd:#1f312b;--ac:#35d2b0;--ac2:#fbbf24;--ac3:#6aa0ff;--ac4:#a78bfa;--ac5:#f87171;--hd:#07110f;--hdt:#e6f2ee;--sh:0 1px 2px #0006,0 10px 30px #0005;--hero:linear-gradient(120deg,#0b3a32,#0f6b5b 70%,#13917a)}
+*{box-sizing:border-box}[hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.55 "Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif}
+h1,h2,h3{margin:0 0 .35em;letter-spacing:-.015em;line-height:1.2}h3{font-size:16px}
+button,select,input{font:inherit;color:inherit}a{color:var(--ac)}
+.btn{background:var(--ac);color:#fff;border:0;border-radius:10px;padding:.62em 1.15em;cursor:pointer;font-weight:600;transition:transform .12s,filter .12s}
+.btn:hover{filter:brightness(1.08);transform:translateY(-1px)}
+.btn.ghost{background:transparent;color:var(--hdt);border:1px solid #ffffff3a}
+.btn.light{background:#ffffff24;color:#fff;border:1px solid #ffffff55}
+.btn:focus-visible,select:focus-visible,input:focus-visible,.tb:focus-visible{outline:2px solid var(--ac2);outline-offset:2px}
+input,select{background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:.65em .8em;width:100%}
+label{display:grid;gap:5px;font-size:13px;font-weight:600;color:var(--mu)}
+.mu{color:var(--mu);font-size:13px}.err{color:#d6453d;font-size:13px;min-height:1.2em}
+/* login */
+.lg{background:var(--card);border:1px solid var(--bd);border-radius:18px;padding:34px;width:min(420px,100%);display:grid;gap:14px;box-shadow:var(--sh)}
+.lg .logo{font-size:12px;color:var(--mu);text-transform:uppercase;letter-spacing:.08em}
+/* app shell */
+header{background:var(--hd);color:var(--hdt);display:flex;gap:10px;align-items:center;padding:10px 22px;flex-wrap:wrap;position:sticky;top:env(safe-area-inset-top,0px);z-index:5}
+.brand{display:flex;align-items:center;gap:10px;margin-right:auto;font-size:16px}
+header nav{display:flex;gap:4px;flex-wrap:wrap}
+header nav button{background:none;border:0;color:var(--hdt);opacity:.65;padding:.45em .9em;cursor:pointer;border-radius:8px;font-weight:600}
+header nav button.on{opacity:1;background:#ffffff1c}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--hd);z-index:10}
+main{max-width:1280px;margin:0 auto;padding:24px 20px 70px}
+section{display:grid;gap:18px}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:20px;box-shadow:var(--sh)}
+.row{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin-bottom:10px}
+.grid{display:grid;gap:16px}.g4{grid-template-columns:repeat(auto-fit,minmax(210px,1fr))}.g2{grid-template-columns:repeat(auto-fit,minmax(min(100%,460px),1fr))}
+.row select{width:auto}
+/* upload */
+.uphero{display:flex;justify-content:space-between;gap:16px;align-items:flex-end;flex-wrap:wrap}
+.uphero p{margin:0}.steps{display:flex;gap:8px;flex-wrap:wrap}
+.steps span,.chip{background:color-mix(in srgb,var(--ac) 12%,var(--card));color:var(--ac);border-radius:99px;padding:5px 13px;font-size:12px;font-weight:700}
+.drop{border:2px dashed color-mix(in srgb,var(--ac) 55%,var(--bd));border-radius:20px;padding:52px 20px;text-align:center;cursor:pointer;background:linear-gradient(180deg,color-mix(in srgb,var(--ac) 6%,var(--card)),var(--card));transition:.15s}
+.drop:hover,.drop.over{border-color:var(--ac);background:color-mix(in srgb,var(--ac) 12%,var(--card))}
+.drop svg{color:var(--ac);margin-bottom:8px}
+/* dashboard */
+.hero{background:var(--hero);color:#fff;border-radius:18px;padding:24px 26px;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;box-shadow:var(--sh)}
+.hero h2{font-size:26px;margin:2px 0 6px;word-break:break-word}.eyebrow{font-size:11px;letter-spacing:.12em;text-transform:uppercase;opacity:.8;font-weight:700}
+.heroM{font-size:13px;opacity:.9}.heroR{display:flex;flex-direction:column;align-items:flex-end;gap:10px}.hero .chip{background:#ffffff26;color:#fff}
+.tbs{display:flex;gap:7px;flex-wrap:wrap}
+.tb{background:var(--card);border:1px solid var(--bd);border-radius:99px;padding:.42em 1em;cursor:pointer;font-weight:600;font-size:13px;color:var(--mu)}
+.tb:hover{border-color:var(--ac);color:var(--ac)}.tb.on{background:var(--ac);color:#fff;border-color:var(--ac)}
+.kpi{position:relative;overflow:hidden;padding:16px 18px 14px}
+.kpi::before{content:"";position:absolute;inset:0 0 auto;height:4px;background:var(--ac)}
+.kpi:nth-child(5n+2)::before{background:var(--ac2)}.kpi:nth-child(5n+3)::before{background:var(--ac3)}.kpi:nth-child(5n+4)::before{background:var(--ac4)}.kpi:nth-child(5n+5)::before{background:var(--ac5)}
+.kpi .n:first-child{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--mu)}
+.kpi .v{font-size:27px;font-weight:700;letter-spacing:-.02em;margin:4px 0 2px;font-variant-numeric:tabular-nums}
+.kpi .n:last-child{font-size:12px;color:var(--mu)}
+.ch{height:300px;position:relative}.ch canvas{max-height:100%}
+.nt{padding-left:18px;margin:8px 0 0}.nt li{margin:7px 0}
+.tw{overflow-x:auto;border-radius:10px}table{border-collapse:collapse;width:100%;font-size:13px}
+th,td{padding:8px 12px;border-bottom:1px solid var(--bd);text-align:left;white-space:nowrap}
+th{background:color-mix(in srgb,var(--ac) 9%,var(--card));font-size:12px;text-transform:uppercase;letter-spacing:.04em;color:var(--mu);position:sticky;top:0}
+tr:hover td{background:color-mix(in srgb,var(--ac) 5%,var(--card))}
+.bd{display:inline-block;padding:2px 10px;border-radius:99px;font-size:12px;font-weight:700;background:color-mix(in srgb,var(--ac) 14%,transparent);color:var(--ac);margin-right:4px}
+.bd.m{background:var(--ac2);color:#2a1c00}.bd.l{background:#d6453d22;color:#d6453d}
+.sec h3{margin:4px 0 10px;font-size:15px;text-transform:uppercase;letter-spacing:.06em;color:var(--mu)}
+details.card>summary{cursor:pointer;font-weight:700;list-style:none}details.card>summary::before{content:"\25B8  ";color:var(--ac)}details[open].card>summary::before{content:"\25BE  "}details.card[open]>summary{margin-bottom:10px}
+.radios{display:flex;gap:16px;flex-wrap:wrap}.radios label{display:flex;align-items:center;gap:7px;font-weight:600;color:var(--tx)}.radios input{width:auto}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}.sub{font-size:13px;font-weight:700;color:var(--mu)}
+@media(max-width:520px){.two{grid-template-columns:1fr}}
+.lg .btn:disabled,.btn:disabled{opacity:.55;cursor:not-allowed;transform:none}
+.lg.wide{width:min(580px,100%)}
+#login{min-height:100vh;display:grid;place-items:center;padding:24px;background:var(--bg)}
+.authwrap{width:min(460px,100%);display:grid;gap:18px;justify-items:center}
+.authwrap .lg{width:100%}
+.brandline{display:flex;align-items:center;gap:10px;font-weight:700;font-size:17px}
+.brandline small{display:block;font-weight:500;color:var(--mu);font-size:12px}
+.swap{text-align:center;color:var(--mu);font-size:14px}
+.gbtn{background:#fff;color:#1f1f1f;border:1px solid #dadce0;display:flex;align-items:center;justify-content:center;gap:10px;font-weight:600}
+.or{display:flex;align-items:center;gap:10px;color:var(--mu);font-size:13px}.or::before,.or::after{content:"";flex:1;height:1px;background:var(--bd)}
+#recaptcha-box{position:fixed;right:0;bottom:0}
+.done{display:none!important}
+</style>
+<link rel="stylesheet" href="/static/theme.css">
+</head><body>
+
+<div id="login"><aside class="lg-hero"><svg class="strands" viewBox="0 0 600 800" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><path class="strand c" d="M-20 640C140 640 200 420 340 420S520 560 640 330"/><path class="strand a" d="M-20 560C150 560 220 330 360 330S540 470 640 240"/><path class="strand b" d="M-20 480C160 480 240 250 380 250S560 380 640 150"/><path class="strand a" d="M-20 400C170 400 260 180 400 180S570 300 640 70"/><path class="strand c" d="M-20 720C130 720 190 520 330 520S510 650 640 430"/></svg><div class="lg-copy"><svg class="bars" viewBox="0 0 120 64" aria-hidden="true"><rect x="2" y="34" width="14" height="30" rx="3"/><rect x="22" y="22" width="14" height="42" rx="3"/><rect x="42" y="10" width="14" height="54" rx="3"/><rect x="62" y="26" width="14" height="38" rx="3"/><rect x="82" y="4" width="14" height="60" rx="3"/><rect x="102" y="18" width="14" height="46" rx="3"/></svg><h2>Every shift&#8217;s numbers, one upload away.</h2><p>Drop in today&#8217;s Excel workbook and see production, dispatch and stock as a dashboard in seconds.</p><ul><li>Works with password-protected workbooks</li><li>Sign in with Google, an email code or a mobile OTP</li><li>Your files are read in the browser and never stored</li></ul></div></aside><div class="authwrap">
+<div class="brandline"><svg width="34" height="34" viewBox="0 0 40 40" aria-hidden="true"><rect width="40" height="40" rx="11" fill="#0d7a68"/><rect x="9" y="21" width="5" height="10" rx="1.5" fill="#fff"/><rect x="17.5" y="14" width="5" height="17" rx="1.5" fill="#f2a20c"/><rect x="26" y="8" width="5" height="23" rx="1.5" fill="#fff"/></svg><span>Jayshree Polymers India Pvt. Ltd.<small>Analytics Hub</small></span></div>
+
+<form class="lg" id="lf" onsubmit="return false" hidden>
+<h1>Sign in</h1>
+<label>Email, mobile number or username<input id="lu" autocomplete="username"></label>
+<label>Password<input id="lp" type="password" autocomplete="current-password"></label>
+<div class="err" id="le"></div>
+<button class="btn" id="lb">Sign in</button>
+<div class="or"><span>or</span></div>
+<button type="button" class="btn gbtn" id="lgoogle"><svg width="18" height="18" viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9.1 3.6l6.8-6.8C35.9 2.4 30.4 0 24 0 14.6 0 6.5 5.4 2.6 13.2l7.9 6.1C12.4 13.6 17.7 9.5 24 9.5z"/><path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v9h12.7c-.6 3-2.3 5.5-4.8 7.2l7.5 5.8c4.4-4.1 7.1-10.1 7.1-17.5z"/><path fill="#FBBC05" d="M10.5 28.7c-.5-1.5-.8-3-.8-4.7s.3-3.2.8-4.7l-7.9-6.1C.9 16.4 0 20.1 0 24s.9 7.6 2.6 10.8l7.9-6.1z"/><path fill="#34A853" d="M24 48c6.4 0 11.9-2.1 15.9-5.8l-7.5-5.8c-2.1 1.4-4.8 2.3-8.4 2.3-6.3 0-11.6-4.1-13.5-9.8l-7.9 6.1C6.5 42.6 14.6 48 24 48z"/></svg>Continue with Google</button>
+<a href="#" id="l-mobile" class="mu" style="text-align:center">Sign in with mobile OTP</a>
+<div id="l-box" hidden><div data-phone="l"></div></div>
+<div class="mu email-otp-off" hidden>Email code verification is unavailable. Ask the site owner to configure Brevo mail.</div>
+<div class="mu nofb" hidden>Google and mobile verification are not set up yet. The owner must fill in <b>config.ini</b> (see the README).</div>
+<a href="#" id="fg" class="mu">Forgot password?</a>
+<div class="swap" id="reg-wrap" hidden>New user? <a href="#" id="reg-link">Register</a></div>
+</form>
+
+<form class="lg" id="rf" onsubmit="return false" hidden>
+<h1 id="rtitle">Register</h1>
+<div id="r1" class="lg" style="padding:0;border:0;box-shadow:none;width:auto">
+<div class="mu">Verify your email with Google or an emailed code, or verify your mobile number with an SMS OTP. You can do more than one.</div>
+<div class="bd" id="rver" hidden style="white-space:normal"></div>
+<button type="button" class="btn gbtn" id="rgoogle"><svg width="18" height="18" viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9.1 3.6l6.8-6.8C35.9 2.4 30.4 0 24 0 14.6 0 6.5 5.4 2.6 13.2l7.9 6.1C12.4 13.6 17.7 9.5 24 9.5z"/><path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v9h12.7c-.6 3-2.3 5.5-4.8 7.2l7.5 5.8c4.4-4.1 7.1-10.1 7.1-17.5z"/><path fill="#FBBC05" d="M10.5 28.7c-.5-1.5-.8-3-.8-4.7s.3-3.2.8-4.7l-7.9-6.1C.9 16.4 0 20.1 0 24s.9 7.6 2.6 10.8l7.9-6.1z"/><path fill="#34A853" d="M24 48c6.4 0 11.9-2.1 15.9-5.8l-7.5-5.8c-2.1 1.4-4.8 2.3-8.4 2.3-6.3 0-11.6-4.1-13.5-9.8l-7.9 6.1C6.5 42.6 14.6 48 24 48z"/></svg>Continue with Google</button>
+<div class="or" id="r-or"><span>or</span></div>
+<div id="r-box"><div data-phone="r"></div></div>
+<div class="mu email-otp-off" hidden>Email code verification is unavailable. Ask the site owner to configure Brevo mail.</div>
+<div class="err" id="re"></div>
+<button class="btn" id="rnext" hidden>Next: choose username and password</button>
+<div class="mu nofb" hidden>Google and mobile verification are not set up yet. The owner must fill in <b>config.ini</b> (see the README).</div>
+</div>
+<div id="r3" class="lg" style="padding:0;border:0;box-shadow:none;width:auto" hidden>
+<div class="bd" id="rver3" style="white-space:normal"></div>
+<label>Username<input id="ru" autocomplete="username"></label>
+<div class="two"><label>Password<input id="rp" type="password" autocomplete="new-password"></label><label>Confirm password<input id="rp2" type="password" autocomplete="new-password"></label></div>
+<div class="mu">Password: at least 8 characters, with a letter and a number.</div>
+<div class="err" id="re3"></div><button class="btn" id="rcreate">Create account</button>
+<a href="#" id="r3back" class="mu">Back</a>
+</div>
+<div class="swap" id="rback">Already registered? <a href="#" data-back>Sign in</a></div>
+</form>
+
+<form class="lg" id="ff" onsubmit="return false" hidden>
+<h1>Forgot password</h1>
+<div id="fs1">
+<div class="mu">Prove it is you with the Google account, an emailed code, or the mobile number on your account.</div>
+<button type="button" class="btn gbtn" id="fgoogle"><svg width="18" height="18" viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9.1 3.6l6.8-6.8C35.9 2.4 30.4 0 24 0 14.6 0 6.5 5.4 2.6 13.2l7.9 6.1C12.4 13.6 17.7 9.5 24 9.5z"/><path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v9h12.7c-.6 3-2.3 5.5-4.8 7.2l7.5 5.8c4.4-4.1 7.1-10.1 7.1-17.5z"/><path fill="#FBBC05" d="M10.5 28.7c-.5-1.5-.8-3-.8-4.7s.3-3.2.8-4.7l-7.9-6.1C.9 16.4 0 20.1 0 24s.9 7.6 2.6 10.8l7.9-6.1z"/><path fill="#34A853" d="M24 48c6.4 0 11.9-2.1 15.9-5.8l-7.5-5.8c-2.1 1.4-4.8 2.3-8.4 2.3-6.3 0-11.6-4.1-13.5-9.8l-7.9 6.1C6.5 42.6 14.6 48 24 48z"/></svg>Verify with Google</button>
+<div class="or"><span>or</span></div>
+<div data-phone="f"></div>
+<div class="mu email-otp-off" hidden>Email code verification is unavailable. Ask the site owner to configure Brevo mail.</div>
+<div class="err" id="fe"></div>
+<div class="mu nofb" hidden>Google and mobile verification are not set up yet. The owner must fill in <b>config.ini</b> (see the README).</div>
+</div>
+<div id="fs3" hidden>
+<div class="mu">Verified. Choose your new details. You may keep the same username.</div>
+<label>Username<input id="fnu" autocomplete="username"></label>
+<label>New password<input id="fnp" type="password" autocomplete="new-password"></label>
+<label>Confirm new password<input id="fnp2" type="password" autocomplete="new-password"></label>
+<div class="err" id="fe3"></div><button class="btn" id="fsave">Save username and password</button>
+</div>
+<div class="row" style="margin:0"><a href="#" data-back class="mu">Back to sign in</a><a href="#" id="fkey" class="mu">I have the recovery key</a></div>
+</form>
+
+<form class="lg" id="kf" onsubmit="return false" hidden>
+<h1>Recovery key</h1>
+<div class="mu">The key is in the file <b>data/recovery_key.txt</b> on the server computer.</div>
+<label>Username<input id="ku" autocomplete="username"></label>
+<label>Recovery key<input id="kk" placeholder="XXXX-XXXX-XXXX-XXXX" autocomplete="off"></label>
+<label>New password<input id="kp" type="password" autocomplete="new-password"></label>
+<label>Confirm new password<input id="kp2" type="password" autocomplete="new-password"></label>
+<div class="err" id="ke"></div><button class="btn" id="kb">Save new password</button>
+<a href="#" data-back class="mu">Back to sign in</a>
+</form>
+</div></div>
+
+<div id="app" hidden>
+<header><div class="brand"><svg width="30" height="30" viewBox="0 0 40 40" aria-hidden="true"><rect width="40" height="40" rx="11" fill="#fff" fill-opacity=".16"/><rect x="9" y="21" width="5" height="10" rx="1.5" fill="#fff"/><rect x="17.5" y="14" width="5" height="17" rx="1.5" fill="#f2a20c"/><rect x="26" y="8" width="5" height="23" rx="1.5" fill="#fff"/></svg><b>Jayshree Analytics Hub</b></div>
+<nav><button data-v="up" class="on">Upload &amp; analyze</button><button data-v="dash">Dashboard</button><button data-v="prof">My profile</button><button data-v="adm" id="admb">Admin</button></nav>
+<span class="mu" id="who" style="color:var(--hdt)"></span><button class="btn ghost" id="thm" title="Switch light / dark theme">Theme</button><button class="btn ghost" id="out">Log out</button></header>
+<main>
+<section id="up">
+<div class="uphero"><div><div class="mu" style="font-weight:700;letter-spacing:.08em;text-transform:uppercase">Daily update</div><h2 style="font-size:28px">Upload today&#8217;s workbook</h2><p class="mu">Upload the latest file and the dashboard is built from it right away. Files are never saved on the server.</p></div>
+<div class="steps"><span>1 &middot; Upload</span><span>2 &middot; Analyze</span><span>3 &middot; Dashboard</span></div></div>
+<div class="drop" id="dz"><svg width="46" height="46" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4m0 0L7.5 8.5M12 4l4.5 4.5"/><path d="M4 15v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/></svg><h3>Drop the Excel file here, or click to browse</h3><div class="mu">.xlsx &middot; .xlsm &middot; .xls &middot; .csv &mdash; protected files are fine. Nothing is stored: the dashboard is built from the file you upload, every time.</div><input type="file" id="fi" accept=".xlsx,.xlsm,.xls,.csv" hidden></div>
+<div class="err" id="st"></div>
+<div id="ur" class="grid"></div>
+</section>
+<section id="dash" hidden>
+<div class="row card"><div><h2 id="dt">Dashboard</h2><div id="db" class="mu">Upload a file to begin.</div></div><label class="mu">Sheet <select id="sel"></select></label></div>
+<div class="grid g4" id="kp"></div>
+<div class="grid g2" id="cg"></div>
+<div class="card"><h3>Cleaned data preview</h3><div class="tw" id="pv"></div></div>
+</section>
+<section id="prof" hidden>
+<div class="card"><h2>My profile</h2><div class="mu" id="pf-user"></div></div>
+<div class="card"><h3>Email and mobile number</h3><div class="mu">Verified with Google and an SMS OTP. They are used to sign in and to recover your password.</div>
+<div class="grid g2" style="margin-top:10px">
+<div><div class="sub">Email</div><div id="pem-view" class="mu" style="margin:4px 0 8px">&mdash;</div><div class="row" style="justify-content:flex-start;margin:0"><button class="btn gbtn" id="pgoogle" style="width:auto"><svg width="18" height="18" viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9.1 3.6l6.8-6.8C35.9 2.4 30.4 0 24 0 14.6 0 6.5 5.4 2.6 13.2l7.9 6.1C12.4 13.6 17.7 9.5 24 9.5z"/><path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v9h12.7c-.6 3-2.3 5.5-4.8 7.2l7.5 5.8c4.4-4.1 7.1-10.1 7.1-17.5z"/><path fill="#FBBC05" d="M10.5 28.7c-.5-1.5-.8-3-.8-4.7s.3-3.2.8-4.7l-7.9-6.1C.9 16.4 0 20.1 0 24s.9 7.6 2.6 10.8l7.9-6.1z"/><path fill="#34A853" d="M24 48c6.4 0 11.9-2.1 15.9-5.8l-7.5-5.8c-2.1 1.4-4.8 2.3-8.4 2.3-6.3 0-11.6-4.1-13.5-9.8l-7.9 6.1C6.5 42.6 14.6 48 24 48z"/></svg>Verify with Google</button><button class="btn" id="pem-rm" style="background:var(--mu)">Remove</button></div></div>
+<div><div class="sub">Mobile number</div><div id="pph-view" class="mu" style="margin:4px 0 8px">&mdash;</div><div data-phone="p"></div><button class="btn" id="pph-rm" style="background:var(--mu);margin-top:8px">Remove</button></div></div>
+<div class="err" id="pmsg"></div></div>
+<div class="grid g2">
+<div class="card"><h3>Change username</h3><label>New username<input id="pnu" autocomplete="username"></label><label style="margin-top:8px">Your password<input id="pnu-pw" type="password" autocomplete="current-password"></label><div class="err" id="pnu-m"></div><button class="btn" id="pnu-ok">Change username</button></div>
+<div class="card"><h3>Change password</h3><label>Current password<input id="pop" type="password" autocomplete="current-password"></label><label style="margin-top:8px">New password<input id="pnp" type="password" autocomplete="new-password"></label><label style="margin-top:8px">Confirm new password<input id="pnp2" type="password" autocomplete="new-password"></label><div class="err" id="pnp-m"></div><button class="btn" id="pnp-ok">Change password</button></div>
+</div></section>
+<section id="adm" hidden>
+<div class="card"><h2>Users</h2><div class="tw" id="ul"></div>
+<div class="grid g4" style="margin-top:14px">
+<label>Username<input id="nu"></label><label>Password<input id="np" type="password" autocomplete="new-password"></label>
+<label>Email (optional)<input id="nem" type="email"></label><label>Mobile (optional)<input id="nph" type="tel"></label>
+<label>Role<select id="nr"><option>user</option><option>admin</option></select></label></div>
+<div class="mu">Email and mobile added here stay <b>not verified</b> until the person confirms them in <b>My profile</b> (Google or SMS OTP).</div><div class="err" id="nu-m"></div><button class="btn" id="au" style="margin-top:6px">Add user</button></div>
+<div class="card"><h2>Activity log</h2><div class="tw" id="lg"></div></div>
+</section>
+</main></div>
+
+<div id="recaptcha-box"></div>
+<script src="/static/vendor/xlsx.full.min.js"></script>
+<script src="/static/vendor/chart.umd.js"></script>
+<script>
+const api=async(u,o={})=>{const r=await fetch(u,{credentials:'same-origin',...o});let d=null;try{d=await r.json()}catch(e){}if(!r.ok)throw new Error((d&&d.error)||'Request failed ('+r.status+')');return d};
+const jpost=(u,b)=>api(u,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(b)});
+const $=s=>document.querySelector(s),esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+let me=null,role='user',sheets=[],cur=null,charts=[],specs=[];
+
+/* ---------- auth ---------- */
+/* ---------- Google sign-in and mobile OTP (Firebase) ---------- */
+const FB={auth:null,confirm:null,cap:null};
+const loadScript=src=>new Promise((ok,bad)=>{const s=document.createElement('script');s.src=src;s.onload=ok;s.onerror=()=>bad(new Error('Could not load '+src+'. Check the internet connection.'));document.head.appendChild(s)});
+async function fbInit(){
+ if(!CFG.firebase)throw new Error('Google and mobile verification are not set up yet. The owner must fill in config.ini.');
+ if(!FB.auth){if(!window.firebase){await loadScript('/static/vendor/firebase-app-compat.js');await loadScript('/static/vendor/firebase-auth-compat.js')}
+  if(!firebase.apps.length)firebase.initializeApp(CFG.firebase);FB.auth=firebase.auth()}
+ return FB.auth}
+const FB_ERR={'auth/popup-closed-by-user':'The Google window was closed.','auth/cancelled-popup-request':'The Google window was closed.','auth/popup-blocked':'Your browser blocked the Google window. Allow pop-ups for this site.',
+ 'auth/invalid-phone-number':'This mobile number is not valid.','auth/missing-phone-number':'Enter your mobile number.','auth/code-expired':'This OTP has expired. Send a new one.',
+ 'auth/too-many-requests':'Too many tries. Please wait a while and try again.','auth/quota-exceeded':'The SMS limit was reached. Try again later.','auth/network-request-failed':'No internet connection.',
+ 'auth/unauthorized-domain':'This web address is not allowed in Firebase. Open the website as http://localhost:8085 (see the README).',
+ 'auth/operation-not-allowed':'Google / Phone sign-in is not turned on in the Firebase console.','auth/billing-not-enabled':'Firebase needs billing enabled to send SMS to real numbers. Use a test number or enable billing.',
+ 'auth/captcha-check-failed':'The security check failed. Reload the page and try again.','auth/invalid-app-credential':'The security check failed. Reload the page and try again.'};
+const fbError=e=>(e&&FB_ERR[e.code])||(e&&e.message)||'Something went wrong. Please try again.';
+function toE164(raw){const s=String(raw||'').trim(),d=s.replace(/\D/g,''),cc=(CFG.default_cc||'+91');let n;
+ if(s.startsWith('+'))n='+'+d;else if(s.startsWith('00'))n='+'+d.slice(2);else if(d.length===10)n=cc+d;else if(d.length===11&&d[0]==='0')n=cc+d.slice(1);else n='+'+d;
+ return /^\+\d{8,15}$/.test(n)?n:null}
+async function googleToken(){const a=await fbInit();const r=await a.signInWithPopup(new firebase.auth.GoogleAuthProvider());const t=await r.user.getIdToken();try{await a.signOut()}catch(e){}return t}
+async function withGoogle(btn,msgSel,onToken){note(msgSel,'');busy(btn,1);try{await onToken(await googleToken())}catch(e){note(msgSel,fbError(e))}busy(btn,0)}
+const phoneHtml=p=>`<div id="${p}-p1"><label>Mobile number<input id="${p}-ph" type="tel" autocomplete="tel" placeholder="98765 43210"></label><button type="button" class="btn" id="${p}-psend" style="margin-top:8px">Send OTP</button></div><div id="${p}-p2" hidden><label>Enter the 6-digit OTP<input id="${p}-pcode" inputmode="numeric" maxlength="6" autocomplete="one-time-code" placeholder="123456"></label><div class="row" style="justify-content:flex-start;margin:8px 0 0"><button type="button" class="btn" id="${p}-pverify">Verify OTP</button><button type="button" class="btn" id="${p}-presend" style="background:var(--mu)" disabled>Resend OTP</button></div></div><div class="err" id="${p}-pmsg"></div>`;
+document.querySelectorAll('[data-phone]').forEach(d=>d.innerHTML=phoneHtml(d.dataset.phone));
+/* ---------- Email OTP (any email address; the code is emailed by the server) ---------- */
+const tk=t=>typeof t==='string'?{id_token:t}:t;
+const emailHtml=p=>`<div id="${p}-e1"><label>Email address<input id="${p}-em" type="email" autocomplete="email" placeholder="you@example.com"></label><button type="button" class="btn" id="${p}-esend" style="margin-top:8px">Send code to email</button></div><div id="${p}-e2" hidden><label>Enter the 6-digit code from your email<input id="${p}-ecode" inputmode="numeric" maxlength="6" autocomplete="one-time-code" placeholder="123456"></label><div class="row" style="justify-content:flex-start;margin:8px 0 0"><button type="button" class="btn" id="${p}-everify">Verify code</button><button type="button" class="btn" id="${p}-eresend" style="background:var(--mu)" disabled>Resend code</button></div></div><div class="err" id="${p}-emsg"></div>`;
+const ewrap=p=>`<div data-email-wrap id="${p}-ewrap" hidden><div class="or"><span>or</span></div><div data-email="${p}"></div></div>`;
+$('#lgoogle').insertAdjacentHTML('afterend',ewrap('l'));
+$('#rgoogle').insertAdjacentHTML('afterend',ewrap('r'));
+$('#fgoogle').insertAdjacentHTML('afterend',ewrap('f'));
+$('#pgoogle').closest('.row').insertAdjacentHTML('afterend','<div data-email-wrap id="p-ewrap" hidden style="margin-top:8px"><div data-email="p"></div></div>');
+document.querySelectorAll('[data-email]').forEach(d=>d.innerHTML=emailHtml(d.dataset.email));
+function wireEmail(p,onToken){
+ const q=id=>$('#'+p+'-'+id),m='#'+p+'-emsg';let tmr=null,email='';
+ const cool=sec=>{clearInterval(tmr);const b=q('eresend');let s=sec;const tick=()=>{b.textContent=s>0?'Resend code in '+s+'s':'Resend code';b.disabled=s>0;if(s<=0)clearInterval(tmr);s--};tick();tmr=setInterval(tick,1000)};
+ const back=()=>{q('e1').hidden=false;q('e2').hidden=true;clearInterval(tmr)};
+ const send=async()=>{note(m,'');email=q('em').value.trim().toLowerCase();if(!/^[^@\s]+@[^@\s]+\.[A-Za-z]{2,}$/.test(email))return note(m,'Enter a valid email address.');busy(q('esend'),1);
+  try{await jpost('/api/email-otp/send',{email});q('e1').hidden=true;q('e2').hidden=false;q('ecode').value='';q('ecode').focus();note(m,'A code was sent to '+email+'. Check your inbox and spam folder.',1);cool(60)}catch(e){note(m,e.message)}busy(q('esend'),0)};
+ q('esend').onclick=send;q('eresend').onclick=send;
+ q('everify').onclick=async()=>{note(m,'');const code=q('ecode').value.trim();if(!/^\d{6}$/.test(code))return note(m,'Enter the 6-digit code.');busy(q('everify'),1);
+  try{await onToken({email,email_otp:code});back();q('em').value='';note(m,'')}catch(e){note(m,e.message)}busy(q('everify'),0)}}
+
+function wirePhone(p,onToken){
+ const q=id=>$('#'+p+'-'+id),m='#'+p+'-pmsg';let tries=0,tmr=null;
+ const cool=sec=>{clearInterval(tmr);const b=q('presend');let s=sec;const tick=()=>{b.textContent=s>0?'Resend OTP in '+s+'s':'Resend OTP';b.disabled=s>0;if(s<=0)clearInterval(tmr);s--};tick();tmr=setInterval(tick,1000)};
+ const back=()=>{q('p1').hidden=false;q('p2').hidden=true;clearInterval(tmr)};
+ const send=async()=>{note(m,'');const phone=toE164(q('ph').value);if(!phone)return note(m,'Enter a valid mobile number.');busy(q('psend'),1);
+  try{const a=await fbInit();if(FB.cap){try{FB.cap.clear()}catch(e){}}FB.cap=new firebase.auth.RecaptchaVerifier('recaptcha-box',{size:'invisible'});
+   FB.confirm=await a.signInWithPhoneNumber(phone,FB.cap);tries=0;q('p1').hidden=true;q('p2').hidden=false;q('pcode').value='';q('pcode').focus();note(m,'An OTP was sent to '+phone+'. You have 5 attempts.',1);cool(60)}catch(e){note(m,fbError(e))}busy(q('psend'),0)};
+ q('psend').onclick=send;q('presend').onclick=send;
+ q('pverify').onclick=async()=>{note(m,'');const code=q('pcode').value.trim();if(!/^\d{6}$/.test(code))return note(m,'Enter the 6-digit OTP.');
+  try{const r=await FB.confirm.confirm(code);const idt=await r.user.getIdToken();try{(await fbInit()).signOut()}catch(e){}tries=0;await onToken(idt);back();q('ph').value=''}
+  catch(e){if(e&&e.code==='auth/invalid-verification-code'){tries++;if(tries>=5){back();return note(m,'All 5 attempts are used. Send a new OTP.')}const left=5-tries;return note(m,'Wrong OTP. '+left+' attempt'+(left===1?'':'s')+' left.')}note(m,fbError(e))}}}
+
+/* ---------- sign in, register, recover ---------- */
+const VIEWS=['lf','rf','ff','kf'],view=id=>VIEWS.forEach(v=>$('#'+v).hidden=v!==id);
+const note=(sel,text,ok)=>{const e=$(sel);e.style.color=ok?'var(--ac)':'';e.textContent=text||''};
+const busy=(b,on)=>{b.disabled=on};
+let CFG={},setupMode=false;
+async function loadCfg(keep){try{CFG=await api('/api/public-config')}catch(e){CFG={}}
+ $('#reg-wrap').hidden=!CFG.allow_signup;document.querySelectorAll('[data-email-wrap]').forEach(n=>n.hidden=!CFG.email_otp);document.querySelectorAll('.email-otp-off').forEach(n=>n.hidden=!!CFG.email_otp);document.querySelectorAll('.nofb').forEach(n=>n.hidden=!!CFG.firebase);
+ if(keep)return;
+ if(CFG.setup_needed)startRegister(true);else view('lf')}
+async function login(){note('#le','');const b=$('#lb');busy(b,1);try{enter(await jpost('/api/login',{username:$('#lu').value.trim(),password:$('#lp').value}))}catch(e){note('#le',e.message)}busy(b,0)}
+function enter(u){me=u;$('#login').hidden=true;$('#app').hidden=false;$('#who').textContent=u.username+' ('+u.role+')';$('#admb').hidden=u.role!=='admin';show('up')}
+$('#lb').onclick=login;$('#lp').onkeydown=e=>{if(e.key==='Enter')login()};
+$('#out').onclick=async()=>{try{await jpost('/api/logout',{})}catch(e){}location.reload()};
+document.querySelectorAll('[data-back]').forEach(a=>a.onclick=e=>{e.preventDefault();view('lf');note('#le','')});
+// sign in page: Continue with Google, or mobile OTP
+async function fbLogin(token){const r=await jpost('/api/firebase/login',{...tk(token)});if(r.new){startRegister(r.kind==='setup');rApply(r);rStep(3);return}enter(r)}
+$('#lgoogle').onclick=()=>withGoogle($('#lgoogle'),'#le',fbLogin);
+$('#l-mobile').onclick=e=>{e.preventDefault();$('#l-box').hidden=!$('#l-box').hidden};
+wirePhone('l',fbLogin);wireEmail('l',fbLogin);
+// register: 1) verify Google email and/or mobile OTP  2) choose username + password  3) sign in
+let ptok=null;
+const rStep=n=>{$('#r1').hidden=n!==1;$('#r3').hidden=n!==3};
+function rApply(r){ptok=r.ptoken||null;const bits=[];if(r.email)bits.push('email address '+r.email);if(r.phone)bits.push('mobile '+r.phone);
+ const txt=bits.length?'Verified: '+bits.join(' and '):'';$('#rver').textContent=txt;$('#rver3').textContent=txt;$('#rver').hidden=!bits.length;$('#rnext').hidden=!bits.length;
+ $('#rgoogle').hidden=!!r.email;{const ew=$('#r-ewrap');if(ew)ew.classList.toggle('done',!!r.email)}$('#r-box').hidden=!!r.phone;$('#r-or').hidden=!!(r.email||r.phone)}
+function startRegister(setup){setupMode=!!setup;$('#rtitle').textContent=setup?'Create the administrator account':'Register';$('#rback').hidden=!!setup;rApply({});note('#re','');rStep(1);view('rf')}
+const rVerify=async t=>rApply(await jpost('/api/signup/verify',{...tk(t),ptoken:ptok}));
+$('#reg-link').onclick=e=>{e.preventDefault();startRegister(false)};
+$('#rgoogle').onclick=()=>withGoogle($('#rgoogle'),'#re',rVerify);
+wirePhone('r',rVerify);wireEmail('r',rVerify);
+$('#rnext').onclick=e=>{e.preventDefault();rStep(3);$('#ru').focus()};
+$('#r3back').onclick=e=>{e.preventDefault();rStep(1)};
+$('#rcreate').onclick=async()=>{note('#re3','');if($('#rp').value!==$('#rp2').value)return note('#re3','The two passwords do not match.');busy($('#rcreate'),1);
+ try{const r=await jpost('/api/signup/create',{ptoken:ptok,username:$('#ru').value.trim(),password:$('#rp').value,confirm_password:$('#rp2').value});await loadCfg(true);
+  $('#lu').value=r.username;$('#lp').value='';['#ru','#rp','#rp2'].forEach(s=>$(s).value='');view('lf');note('#le','Account created. Please sign in with your new username and password.',1);$('#lp').focus()}catch(e){note('#re3',e.message)}busy($('#rcreate'),0)};
+// forgot password: Google or mobile OTP -> new username + password
+let ftok=null;
+const fShow=n=>{$('#fs1').hidden=n!==1;$('#fs3').hidden=n!==3};
+async function fVerified(token){const r=await jpost('/api/forgot/verify',{...tk(token)});ftok=r.token;$('#fnu').value=r.username;fShow(3)}
+$('#fg').onclick=e=>{e.preventDefault();fShow(1);view('ff')};
+$('#fgoogle').onclick=()=>withGoogle($('#fgoogle'),'#fe',fVerified);
+wirePhone('f',fVerified);wireEmail('f',fVerified);
+$('#fsave').onclick=async()=>{note('#fe3','');if($('#fnp').value!==$('#fnp2').value)return note('#fe3','The two passwords do not match.');
+ try{const r=await jpost('/api/forgot/reset',{token:ftok,new_username:$('#fnu').value.trim(),new_password:$('#fnp').value,confirm_password:$('#fnp2').value});note('#fe3','Saved. You can sign in with your new details.',1);
+  setTimeout(()=>{$('#lu').value=r.username;$('#lp').value='';['#fnp','#fnp2'].forEach(s=>$(s).value='');view('lf');note('#le','Username and password changed. Please sign in.',1)},1400)}catch(e){note('#fe3',e.message)}};
+$('#fkey').onclick=e=>{e.preventDefault();view('kf')};
+$('#kb').onclick=async()=>{note('#ke','');if($('#kp').value!==$('#kp2').value)return note('#ke','The two passwords do not match.');
+ try{await jpost('/api/forgot',{username:$('#ku').value.trim(),key:$('#kk').value,new:$('#kp').value});note('#ke','Password saved. Taking you to sign in\u2026',1);setTimeout(()=>{view('lf');note('#le','Password changed. Please sign in.',1)},1400)}catch(e){note('#ke',e.message)}};
+
+/* ---------- navigation ---------- */
+function show(v){['up','dash','adm','prof'].forEach(x=>$('#'+x).hidden=x!==v);document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on',b.dataset.v===v));if(v==='adm')renderAdmin();if(v==='prof')renderProfile();if(v==='dash'&&cur)renderDash()}
+document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>show(b.dataset.v));
+
+/* ---------- my profile ---------- */
+async function renderProfile(){let p;try{p=await api('/api/profile')}catch(e){return}
+ $('#pf-user').textContent='Signed in as '+p.username+' ('+p.role+')';$('#pnu').value=p.username;
+ const v=(has,ok)=>has?esc(has)+(ok?' <span class="bd">verified</span>':' <span class="bd l">not verified</span>'):'\u2014';
+ $('#pem-view').innerHTML=v(p.email,p.email_verified);$('#pph-view').innerHTML=v(p.phone,p.phone_verified);$('#pem-rm').hidden=!p.email;$('#pph-rm').hidden=!p.phone}
+const addContact=async(t,what)=>{await jpost('/api/profile/contact',{...tk(t)});await renderProfile();note('#pmsg',what+' verified.',1)};
+$('#pgoogle').onclick=()=>withGoogle($('#pgoogle'),'#pmsg',t=>addContact(t,'Email'));
+wirePhone('p',t=>addContact(t,'Mobile number'));wireEmail('p',t=>addContact(t,'Email'));
+const rmContact=async ch=>{note('#pmsg','');try{await jpost('/api/profile/contact/remove',{channel:ch});await renderProfile()}catch(e){note('#pmsg',e.message)}};
+$('#pem-rm').onclick=()=>rmContact('email');$('#pph-rm').onclick=()=>rmContact('sms');
+$('#pnu-ok').onclick=async()=>{note('#pnu-m','');try{const r=await jpost('/api/profile/username',{new:$('#pnu').value.trim(),password:$('#pnu-pw').value});me.username=r.username;$('#who').textContent=r.username+' ('+me.role+')';$('#pnu-pw').value='';note('#pnu-m','Username changed.',1)}catch(e){note('#pnu-m',e.message)}};
+$('#pnp-ok').onclick=async()=>{note('#pnp-m','');if($('#pnp').value!==$('#pnp2').value)return note('#pnp-m','The two passwords do not match.');
+ try{await jpost('/api/password',{old:$('#pop').value,new:$('#pnp').value});['#pop','#pnp','#pnp2'].forEach(s=>$(s).value='');note('#pnp-m','Password changed.',1)}catch(e){note('#pnp-m',e.message)}};
+
+/* ---------- admin: users and activity ---------- */
+const tick=(has,ver)=>has?esc(has)+(ver?' <span class="bd">verified</span>':' <span class="bd l">not verified</span>'):'<span class="mu">\u2014</span>';
+async function renderAdmin(){try{const us=await api('/api/users');
+ $('#ul').innerHTML='<table><tr><th>User</th><th>Role</th><th>Email</th><th>Mobile</th><th>Created</th><th></th></tr>'+us.map(u=>`<tr><td>${esc(u.username)}</td><td>${u.role}</td><td>${tick(u.email,u.email_verified)}</td><td>${tick(u.phone,u.phone_verified)}</td><td>${esc(u.created_at)}</td><td><button class="btn" data-rp="${u.id}">Reset password</button>${u.id===me.id?'':` <button class="btn" style="background:#c0392b" data-du="${u.id}">Remove</button>`}</td></tr>`).join('')+'</table>';
+ $('#ul').querySelectorAll('[data-rp]').forEach(b=>b.onclick=async()=>{const p=prompt('New password for this user (8+ characters, with a letter and a number)');if(!p)return;try{await jpost('/api/users/'+b.dataset.rp+'/password',{new:p});alert('Password updated.')}catch(e){alert(e.message)}});
+ $('#ul').querySelectorAll('[data-du]').forEach(b=>b.onclick=async()=>{if(!confirm('Remove this user?'))return;try{await api('/api/users/'+b.dataset.du,{method:'DELETE'});renderAdmin()}catch(e){alert(e.message)}});
+ const lg=await api('/api/activity');$('#lg').innerHTML=lg.length?'<table><tr><th>When</th><th>User</th><th>Workbook</th><th>Sheets</th><th>Master sheet</th></tr>'+lg.map(x=>`<tr><td>${esc(x.at)}</td><td>${esc(x.username||'\u2014')}</td><td>${esc(x.filename)}</td><td>${x.sheets}</td><td>${esc(x.master)}</td></tr>`).join('')+'</table>':'<div class="mu">No workbooks analyzed yet.</div>'}catch(e){$('#ul').textContent=e.message}}
+$('#au').onclick=async()=>{note('#nu-m','');try{await jpost('/api/users',{username:$('#nu').value.trim(),password:$('#np').value,role:$('#nr').value,email:$('#nem').value,phone:$('#nph').value});['#nu','#np','#nem','#nph'].forEach(s=>$(s).value='');renderAdmin()}catch(e){note('#nu-m',e.message)}};
+
+/* ---------- upload ---------- */
+const dz=$('#dz'),fi=$('#fi');dz.onclick=()=>fi.click();fi.onchange=()=>fi.files[0]&&handle(fi.files[0]);
+dz.ondragover=e=>{e.preventDefault();dz.classList.add('over')};dz.ondragleave=()=>dz.classList.remove('over');
+dz.ondrop=e=>{e.preventDefault();dz.classList.remove('over');e.dataTransfer.files[0]&&handle(e.dataTransfer.files[0])};
+const st=(m,e)=>{$('#st').style.color=e?'':'var(--mu)';$('#st').textContent=m};
+
+/* ---------- cleaning & typing ---------- */
+const toNum=v=>{if(typeof v==='number')return isNaN(v)?null:v;if(typeof v!=='string')return null;const s=v.replace(/[₹$€£,%\s]/g,'');return /^-?\d+(\.\d+)?$/.test(s)?parseFloat(s):null};
+const isDate=v=>v instanceof Date||(typeof v==='string'&&/^\d{1,4}[-\/.]\d{1,2}[-\/.]\d{1,4}$/.test(v)&&!isNaN(Date.parse(v)));
+function parseSheet(name,ws){
+ const aoa=XLSX.utils.sheet_to_json(ws,{header:1,raw:true,defval:null,blankrows:false});
+ let h=0;for(let i=0;i<Math.min(20,aoa.length);i++){const r=(aoa[i]||[]).filter(v=>v!==null&&v!=='');if(r.length>=2&&r.filter(v=>typeof v==='string').length>=r.length*.6){h=i;break}}
+ const seen={};let head=(aoa[h]||[]).map((v,i)=>String(v??'Column '+(i+1)).trim()).map(x=>{seen[x]=(seen[x]||0)+1;return seen[x]>1?x+' '+seen[x]:x});
+ let rows=aoa.slice(h+1).map(r=>head.map((_,i)=>{let v=r[i]??null;if(typeof v==='string'){v=v.trim();if(v===''||/^(n\/a|na|null|nil|-+)$/i.test(v))v=null}return v}));
+ const raw=rows.length;rows=rows.filter(r=>r.some(v=>v!==null));const empty=raw-rows.length;
+ const before=rows.length;rows=rows.filter(r=>!/^(grand\s)?(sub)?total/i.test(String(r[0]??'')));const totals=before-rows.length;
+ const sr=new Set();let dup=0;rows=rows.filter(r=>{const k=JSON.stringify(r);if(sr.has(k)){dup++;return false}sr.add(k);return true});
+ const keep=head.map((_,i)=>rows.some(r=>r[i]!==null));head=head.filter((_,i)=>keep[i]);rows=rows.map(r=>r.filter((_,i)=>keep[i]));
+ let missing=0;
+ const cols=head.map((n,i)=>{const vs=rows.map(r=>r[i]).filter(v=>v!==null),N=vs.length||1;missing+=rows.length-vs.length;
+  const uniq=new Set(vs.map(String)).size;let t='text';
+  if(vs.filter(v=>toNum(v)!==null).length/N>.85){t=(/(^|[\s_.])(id|code|no|number|phone|mobile|pin|zip|sr|sl)($|[\s_.])|s\.?\s?no|invoice|voucher|emp\s?id/i.test(n)&&uniq/N>.5)?'id':'num';
+   rows.forEach(r=>{if(r[i]!==null)r[i]=toNum(r[i])})}
+  else if(vs.filter(isDate).length/N>.8){t='date';rows.forEach(r=>{if(r[i]!==null)r[i]=r[i] instanceof Date?r[i]:new Date(r[i])})}
+  else if(uniq<=40||uniq/N<.3)t='cat';
+  return{n,t,uniq}});
+ const hit=/master|database|data|main|register|record|detail|working|production/i.test(name),low=/summary|pivot|dashboard|chart|lookup|list$/i.test(name);
+ return{name,head,rows,cols,raw,empty,dup,totals,missing,prot:!!ws['!protect'],score:rows.length*Math.max(cols.length,1)*(hit?1.5:1)*(low?.5:1)}}
+
+/* ---------- business-area detection & KPIs ---------- */
+const fc=(s,re,ty=['num'])=>s.cols.find(c=>ty.includes(c.t)&&re.test(c.n.toLowerCase()));
+const vs=(s,c)=>{const i=s.cols.indexOf(c);return s.rows.map(r=>r[i]).filter(v=>v!==null)};
+const S=(s,re)=>{const c=fc(s,re);return c?vs(s,c).reduce((a,b)=>a+b,0):null};
+const A=(s,re)=>{const c=fc(s,re);if(!c)return null;const v=vs(s,c);return v.length?v.reduce((a,b)=>a+b,0)/v.length:null};
+const D=(s,re)=>{const c=fc(s,re,['cat','text','id']);return c?new Set(vs(s,c)).size:null};
+const P=(s,sre,vre)=>{const c=fc(s,sre,['cat','text']);if(!c)return null;const v=vs(s,c);return v.length?v.filter(x=>vre.test(String(x))).length*100/v.length:null};
+const R=(a,b,f)=>a!=null&&b!=null?f(a,b):null;
+const REV=/revenue|sales|amount|total|value|net/;
+const DOM={
+sales:{label:'Sales',kw:['sales','invoice','customer','order','revenue','product','quantity','qty','discount','region','salesperson','price','dispatch','party'],cat:/product|item|customer|party|region|state|city|salesperson|category/,m:REV,
+ k:[['Total Revenue',s=>S(s,REV),'c'],['Units Sold',s=>S(s,/qty|quantity|units|nos/),'n'],['Average Order Value',s=>A(s,REV),'c'],['Total Orders',s=>s.rows.length,'n'],['Active Customers',s=>D(s,/customer|client|party|buyer/),'n'],['Total Discount',s=>S(s,/discount/),'c']]},
+finance:{label:'Finance & Accounts',kw:['debit','credit','expense','income','profit','ledger','account','budget','balance','voucher','tax','gst','payment','cost','bank'],cat:/account|ledger|head|category|party|type|bank/,m:/amount|debit|credit|expense|income|balance/,
+ k:[['Total Income',s=>S(s,/income|credit|receipt|revenue/),'c'],['Total Expenses',s=>S(s,/expense|debit|cost|payment/),'c'],['Net Profit',s=>R(S(s,/income|credit|receipt|revenue/),S(s,/expense|debit|cost|payment/),(a,b)=>a-b),'c'],['Tax / GST',s=>S(s,/tax|gst|tds/),'c'],['Closing Balance',s=>A(s,/balance/),'c'],['Transactions',s=>s.rows.length,'n']]},
+production:{label:'Production',kw:['production','batch','machine','shift','output','rejection','defect','scrap','yield','downtime','operator','work order','grade','mould','extruder'],cat:/machine|shift|product|grade|operator|batch|line/,m:/output|produc|qty|quantity|weight|kg/,
+ k:[['Total Output',s=>S(s,/output|produc|qty|quantity|weight|kg/),'n'],['Rejected Quantity',s=>S(s,/reject|defect|scrap|waste/),'n'],['Rejection Rate',s=>R(S(s,/reject|defect|scrap|waste/),S(s,/output|produc|qty|quantity/),(a,b)=>b?a*100/b:null),'p'],['Downtime (hrs)',s=>S(s,/downtime/),'n'],['Average Efficiency',s=>A(s,/yield|efficiency|oee/),'p'],['Batches Run',s=>D(s,/batch|lot|work order/),'n']]},
+hr:{label:'HR & Payroll',kw:['employee','emp','salary','department','designation','joining','gender','age','payroll','ctc','leave','grade','pf','esi'],cat:/department|designation|gender|grade|location|category/,m:/salary|ctc|gross|net pay|pay|age/,
+ k:[['Headcount',s=>D(s,/emp|name/)??s.rows.length,'n'],['Average Salary',s=>A(s,/salary|ctc|gross|net pay|wage/),'c'],['Monthly Payroll Cost',s=>S(s,/salary|ctc|gross|net pay|wage/),'c'],['Departments',s=>D(s,/department|dept/),'n'],['Average Age',s=>A(s,/^age|\bage\b/),'n'],['Total Deductions',s=>S(s,/deduction|pf|esi|tds/),'c']]},
+store:{label:'Store & Purchase',kw:['stock','inventory','purchase','vendor','supplier','grn','material','issue','reorder','uom','bin','po','rate','received'],cat:/item|material|vendor|supplier|category|store|uom/,m:/value|amount|qty|quantity|stock|balance/,
+ k:[['Items Managed',s=>D(s,/item|material|product|sku|description/),'n'],['Total Stock Quantity',s=>S(s,/stock|qty|quantity|balance/),'n'],['Stock Value',s=>S(s,/value|amount|cost/),'c'],['Active Vendors',s=>D(s,/vendor|supplier/),'n'],['Purchase Transactions',s=>s.rows.length,'n'],['Average Rate',s=>A(s,/rate|price/),'c']]},
+attendance:{label:'Attendance',kw:['attendance','present','absent','check in','in time','out time','late','overtime','punch','shift','leave'],cat:/status|department|shift|employee|name/,m:/hours|overtime|ot|working/,
+ k:[['Employees Tracked',s=>D(s,/emp|name/),'n'],['Present Rate',s=>P(s,/status|attendance|present/,/^(p|present)/i),'p'],['Absent Rate',s=>P(s,/status|attendance|present/,/^(a|absent)/i),'p'],['Late Arrival Rate',s=>P(s,/status|attendance|remark/,/late/i),'p'],['Overtime Hours',s=>S(s,/overtime|ot/),'n'],['Attendance Records',s=>s.rows.length,'n']]}};
+function detect(s){const txt=(s.name+' ').toLowerCase().repeat(3)+s.head.join(' ').toLowerCase();let best='gen',bs=0,tot=0;
+ for(const k in DOM){const sc=DOM[k].kw.reduce((a,w)=>a+(txt.includes(w)?1:0)+(s.name.toLowerCase().includes(w)?3:0),0);tot+=sc;if(sc>bs){bs=sc;best=k}}
+ s.conf=tot?Math.round(bs*100/tot):0;s.hits=bs;return best}
+const fmt=(v,t)=>{if(v<0)return '-'+fmt(-v,t);if(v==null||isNaN(v))return '—';if(t==='p')return v.toFixed(1)+'%';const a=Math.abs(v);
+ if(t==='c')return '₹'+(a>=1e7?(v/1e7).toFixed(2)+' Cr':a>=1e5?(v/1e5).toFixed(2)+' L':v.toLocaleString('en-IN',{maximumFractionDigits:0}));
+ return v.toLocaleString('en-IN',{maximumFractionDigits:2})};
+
+function renderUp(fn){
+ const tot=sheets.reduce((a,s)=>({r:a.r+s.rows.length,e:a.e+s.empty+s.totals,d:a.d+s.dup,m:a.m+s.missing}),{r:0,e:0,d:0,m:0});
+ $('#ur').innerHTML=`<div class="card"><h2>${esc(fn)}</h2><div class="mu">${sheets.length} sheets analyzed · ${tot.r.toLocaleString('en-IN')} clean rows · removed ${tot.e} empty/total rows and ${tot.d} duplicates · ${tot.m.toLocaleString('en-IN')} missing cells flagged</div></div>
+ <div class="card tw"><table><tr><th>Sheet</th><th>Role</th><th>Business area</th><th>Rows × columns</th><th>Cleaning</th><th>Protection</th><th></th></tr>${sheets.map((s,i)=>`<tr><td><b>${esc(s.name)}</b></td><td>${s.master?'<span class="bd m">Master sheet</span>':'<span class="bd">Supporting</span>'}</td><td>${(DOM[s.dom]||{label:'General business'}).label} <span class="mu">${s.conf}% match</span></td><td>${s.rows.length.toLocaleString('en-IN')} × ${s.cols.length}</td><td class="mu">${s.empty+s.totals} rows dropped, ${s.dup} duplicates, ${s.missing} blanks</td><td>${s.prot?'<span class="bd l">Sheet-protected (read OK)</span>':'Open'}</td><td><button class="btn" data-o="${i}">Open dashboard</button></td></tr>`).join('')}</table></div>`;
+ $('#ur').querySelectorAll('[data-o]').forEach(b=>b.onclick=()=>{cur=sheets[+b.dataset.o];show('dash')});
+ show('dash')}
+
+/* ---------- workbook-wide dashboard ---------- */
+const MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],FULL=['January','February','March','April','May','June','July','August','September','October','November','December'],PAL2=['#0b8576','#f0a30a','#2f6fe4','#7c5cdb','#e0524d','#17a2b8','#8bb31f','#51657a','#d6479a','#c98a04'];
+const TY=[['bar','Bar'],['hbar','Horizontal bar'],['stack','Stacked bar'],['line','Line'],['area','Area'],['pie','Pie'],['doughnut','Doughnut'],['radar','Radar'],['polarArea','Polar area']];
+let tab='ov',fname='',shown=100;
+const _ps=parseSheet;parseSheet=function(n,ws){
+ const s=_ps(n,ws);let err=0;for(const k in ws){if(k[0]!=='!'&&ws[k]&&ws[k].t==='e')err++}s.err=err;
+ try{const d=XLSX.utils.decode_range(ws['!ref']||'A1');const top=XLSX.utils.sheet_to_json(ws,{header:1,defval:null,blankrows:false,range:{s:d.s,e:{r:Math.min(d.s.r+6,d.e.r),c:d.e.c}}});
+  for(const r of top){if(r.some(v=>typeof v==='string'&&v.trim()===s.head[0]))break;const f=r.filter(v=>v!==null&&v!=='');if(f.length&&f.length<=2&&typeof f[0]==='string'&&f[0].length>6&&!s.head.includes(f[0])){s.title=f[0];break}}}catch(e){}
+ const nc=s.cols.map((c,i)=>c.t==='num'?i:-1).filter(i=>i>=0);s.ph=nc.length>=2?s.rows.filter(r=>nc.every(i=>!r[i])).length:0;
+ return s};
+const _ru=renderUp;renderUp=function(f){tab='ov';fname=f;shown=100;_ru(f);$('#ur').querySelectorAll('[data-o]').forEach(b=>b.onclick=()=>{tab=+b.dataset.o;cur=sheets[tab];shown=100;show('dash')})};
+function aggM(s,kc,mcs,top){const ki=s.cols.indexOf(kc),mi=mcs.map(c=>s.cols.indexOf(c)),m=new Map(),isD=kc.t==='date',p2=x=>String(x).padStart(2,'0');
+ s.rows.forEach(r=>{let k=r[ki];if(k===null)return;if(isD){k=new Date(+k+3e5);k=k.getFullYear()+'-'+p2(k.getMonth()+1)+'-'+p2(k.getDate())}else k=String(k);
+  let a=m.get(k);if(!a){a=mi.length?mi.map(()=>0):[0];m.set(k,a)}if(mi.length)mi.forEach((x,j)=>a[j]+=r[x]||0);else a[0]++});
+ let e=[...m.entries()];
+ if(isD){e.sort((a,b)=>a[0]<b[0]?-1:1);const span=(new Date(e[e.length-1][0])-new Date(e[0][0]))/864e5;
+  if(span>62){const mm=new Map();e.forEach(([k,a])=>{const q=k.slice(0,7),b=mm.get(q)||a.map(()=>0);a.forEach((v,j)=>b[j]+=v);mm.set(q,b)});e=[...mm.entries()]}else e=e.map(([k,a])=>[String(+k.slice(8)),a]);e=e.slice(-62)}
+ else e=kc.n==='Day'?e.sort((a,b)=>a[0]<b[0]?-1:1).slice(0,62):e.sort((a,b)=>b[1][0]-a[1][0]).slice(0,top||12);
+ return{labels:e.map(x=>x[0]),sets:(mcs.length?mcs.map(c=>c.n):['Count']).map((n,j)=>({name:n,data:e.map(x=>Math.round(x[1][j]*100)/100)}))}}
+function chartsBase(s){
+ if(s.wide)return wideCharts(s);
+ if(s.rows.length<=30&&/summ|mis|kpi|abstract/i.test(s.name))return [];
+ const d=DOM[s.dom],pr=(k,c)=>d&&s.conf>0&&d[k].test(c.n.toLowerCase())?0:1;
+ const ms=s.cols.filter(c=>c.t==='num'&&!/\b(s\.?\s?no|sr\.?\s?no|sl\.?\s?no)\b/i.test(c.n)&&vs(s,c).some(v=>v!==0)).sort((a,b)=>(AVG.test(a.n)-AVG.test(b.n))||pr('m',a)-pr('m',b));
+ const cats=s.cols.filter(c=>c.t==='cat').sort((a,b)=>pr('cat',a)-pr('cat',b));
+ const dt=s.cols.find(c=>c.t==='date'),m0=ms[0],m1=ms[1],c0=cats[0],c1=cats[1],nm=s.cols.find(c=>(c.t==='text'||c.t==='cat')&&c.uniq>12&&c!==c0),out=[];
+ const add=(title,type,kc,mc,top)=>{if(!kc||out.length>=8)return;const a=aggM(s,kc,mc,top);if(a.labels.length>1)out.push({title,type,sheet:s.name,...a})};
+ if(dt&&m0)add(m0.n+(m1?' and '+m1.n:'')+' over time',m1?'combo':'bar',dt,m1?[m0,m1]:[m0]);
+ if(dt&&ms.length>=2){const p=ms.length>=4?ms.slice(2,4):ms.slice(0,2);add(p.map(c=>c.n).join(' vs ')+' over time','line',dt,p)}
+ if(c0)add((m0?m0.n:'Records')+' by '+c0.n,'hbar',c0,m0?[m0]:[],8);
+ if(c1||c0)add((m0?m0.n+' share by ':'Records by ')+(c1||c0).n,'doughnut',c1||c0,m0?[m0]:[],8);
+ if(c0&&m1)add(m0.n+' vs '+m1.n+' by '+c0.n,'bar',c0,[m0,m1],8);
+ if(nm&&m0)add('Top 10 '+nm.n+' by '+m0.n,'hbar',nm,[m0],10);
+ if(cats[2])add('Records by '+cats[2].n,'polarArea',cats[2],[],8);
+ if(c0&&ms[2])add(ms.slice(0,3).map(c=>c.n).join(', ')+' by '+c0.n,'stack',c0,ms.slice(0,3),8);
+ return out}
+function wideCharts(s){
+ const ki=Math.max(0,s.cols.findIndex(c=>c.n==='Measure')),ic=s.cols[ki],dci=s.cols.length-2,vci=s.cols.length-1,out=[],dk=v=>v instanceof Date?v.toISOString().slice(0,10):String(v);
+ const days=[...new Set(s.rows.map(r=>dk(r[dci])))].sort(),tot=new Map();
+ s.rows.forEach(r=>tot.set(r[ki],(tot.get(r[ki])||0)+(r[vci]||0)));
+ const top=[...tot.entries()].sort((a,b)=>Math.abs(b[1])-Math.abs(a[1])).slice(0,4).map(e=>e[0]);
+ const lbl=days.map(d=>/^\d{4}-/.test(d)?String(+d.slice(8)):String(+d.replace(/\D/g,'')));
+ const sets=top.map(it=>({name:cs(it),data:days.map(d=>Math.round(s.rows.filter(r=>r[ki]===it&&dk(r[dci])===d).reduce((a,r)=>a+(r[vci]||0),0)*100)/100)}));
+ if(days.length>1&&sets.length)out.push({title:'Daily '+sets.map(x=>x.name).join(', '),type:'line',sheet:s.name,labels:lbl,sets});
+ const byItem=aggM(s,ic,[s.cols[vci]],8);
+ if(byItem.labels.length>1){out.push({title:'Total by '+cs(ic.n),type:'hbar',sheet:s.name,...byItem});out.push({title:'Share by '+cs(ic.n),type:'doughnut',sheet:s.name,...byItem})}
+ const byDay=aggM(s,s.cols[dci],[s.cols[vci]]);if(byDay.labels.length>1)out.push({title:'Daily total (all rows)',type:'bar',sheet:s.name,...byDay});
+ return out}
+function notes(list){const n=[],ts=f=>list.reduce((a,s)=>a+f(s),0),L=x=>x.toLocaleString('en-IN');
+ const m=list.find(s=>s.master);if(m)n.push('Master sheet detected: '+m.name+' ('+L(m.rows.length)+' rows × '+m.cols.length+' columns), classified as '+(DOM[m.dom]||{label:'general business'}).label+'.');
+ const er=list.filter(s=>s.err);if(er.length)n.push(L(ts(s=>s.err))+' cells hold Excel errors in the source file ('+er.map(s=>s.name+': '+s.err).join(', ')+'). They are left out of totals.');
+ {const ph=list.filter(s=>s.ph>s.rows.length*.2);if(ph.length)n.push(ph.length+' sheet(s) have empty placeholder rows with no numbers yet: '+ph.map(s=>s.name.trim()+' ('+L(s.rows.length-s.ph)+' of '+L(s.rows.length)+' rows filled)').join(', ')+'. Empty rows add nothing to totals.')}
+ list.filter(s=>s.tmis).forEach(s=>n.push(s.tmis));
+ n.push('Cleaning removed '+L(ts(s=>s.empty))+' blank rows, '+L(ts(s=>s.totals))+' total/footer rows and '+L(ts(s=>s.dup))+' duplicate rows; '+L(ts(s=>s.missing))+' blank cells were flagged.');
+ const pr=list.filter(s=>s.prot);if(pr.length)n.push(pr.length+' protected sheet(s) were read in full: '+pr.map(s=>s.name).join(', ')+'.');
+ list.forEach(s=>(s.mism||[]).forEach(x=>n.push(s.name+': the sheet\u2019s own total differs from its rows \u2014 '+x)));
+ list.filter(s=>s.nocache>0).forEach(s=>n.push(s.name+' has '+s.nocache+' formula cells with no saved result, so they read as blank. Open the file in Excel, press Save, and upload it again.'));
+ return n}
+function renderDash(){
+ if(!sheets.length)return;if(tab!=='ov'&&!sheets[tab])tab='ov';
+ charts.forEach(c=>c.destroy());charts=[];
+ const ov=tab==='ov',s=ov?null:sheets[tab];if(s)cur=s;
+ let secs=[],k=[],sp;
+ if(ov){secs=execSummary(sheets);sp=execCharts(sheets)}else{k=kpisOf(s,12).map(q=>({...q,sh:''}));sp=chartsOf(s)}
+ specs=sp;const nt=notes(ov?sheets:[s]),thr=dataThrough(sheets);
+ let h=`<div class="hero"><div><div class="eyebrow">Analytics dashboard</div><h2>${esc(fname)}</h2><div class="heroM">${curMeta.at?'Analyzed '+esc(curMeta.at)+(curMeta.by?' by '+esc(curMeta.by):''):''}${thr?'<br>'+esc(thr):''}</div></div><div class="heroR"><span class="chip">${sheets.length} sheets analyzed</span></div></div>`;
+ h+='<div class="tbs"><button class="tb'+(ov?' on':'')+'" data-t="ov">Overview</button>'+sheets.map((x,i)=>`<button class="tb${tab===i?' on':''}" data-t="${i}">${esc(x.name.trim())}${x.master?' \u2605':''}</button>`).join('')+'</div>';
+ if(s)h+=`<div class="card"><b>${esc(s.name)}</b> \u00b7 ${(DOM[s.dom]||{label:'General business'}).label} (${s.conf}% match)${s.master?' \u00b7 master sheet':''}${s.prot?' \u00b7 protected':''}<div class="mu">${s.title?'Title row: '+esc(s.title)+' \u00b7 ':''}${s.cols.length} columns \u00b7 ${s.rows.length.toLocaleString('en-IN')} rows \u00b7 ${s.totals} footer/total rows set aside \u00b7 ${s.err} error cells</div></div>`;
+ if(ov)h+=secs.map(sec=>`<div class="sec"><h3>${esc(sec.title)}</h3><div class="grid g4">${sec.items.map(kpiCard).join('')}</div></div>`).join('')||'<div class="card mu">No numeric figures were found in this workbook.</div>';
+ else h+='<div class="grid g4">'+(k.length?k.map(kpiCard).join(''):'<div class="card mu">No numeric columns found for KPIs.</div>')+'</div>';
+ h+='<div class="grid g2">'+sp.map((p,i)=>`<div class="card"><div class="row"><h3>${esc(p.title)}</h3><select data-c="${i}">${TY.concat(p.sets.length===2?[['combo','Bar + line']]:[]).map(t=>`<option value="${t[0]}"${t[0]===p.type?' selected':''}>${t[1]}</option>`).join('')}</select></div>${ov?`<div class="mu">${esc(p.sheet.trim())}</div>`:''}<div class="ch"><canvas id="c${i}"></canvas></div></div>`).join('')+'</div>';
+ h+=det('Data quality notes ('+nt.length+')','<ul class="nt">'+nt.map(x=>'<li>'+esc(x)+'</li>').join('')+'</ul>')+headCard(ov?sheets:[s]);
+ if(s){h+=`<div class="card"><h3>Sheet data (${Math.min(shown,s.rows.length).toLocaleString('en-IN')} of ${s.rows.length.toLocaleString('en-IN')} rows)</h3><div class="tw"><table><tr>${s.head.map(x=>'<th>'+esc(x)+'</th>').join('')}</tr>${s.rows.slice(0,shown).map(r=>'<tr>'+r.map(v=>'<td>'+(v instanceof Date?v.toLocaleDateString('en-IN'):esc(v))+'</td>').join('')+'</tr>').join('')}</table></div>${shown<s.rows.length?'<p><button class="btn" id="mr">Show 500 more rows</button></p>':''}</div>`}
+ $('#dash').innerHTML=h;
+ $('#dash').querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>{tab=b.dataset.t==='ov'?'ov':+b.dataset.t;shown=100;renderDash()});
+ if($('#mr'))$('#mr').onclick=()=>{shown+=500;renderDash()};
+ $('#dash').querySelectorAll('select[data-c]').forEach(x=>x.onchange=()=>{specs[+x.dataset.c].type=x.value;draw(+x.dataset.c)});
+ specs.forEach((p,i)=>draw(i))}
+function draw(i){
+ const p=specs[i],cs=getComputedStyle(document.documentElement);Chart.defaults.color=cs.getPropertyValue('--mu').trim();Chart.defaults.borderColor=cs.getPropertyValue('--bd').trim();
+ if(charts[i])charts[i].destroy();
+ const t=p.type,circ=['pie','doughnut','polarArea'].includes(t),sets=circ?p.sets.slice(0,1):p.sets;
+ const ds=sets.map((x,j)=>{const c=PAL2[j%PAL2.length],ln=t==='line'||t==='area';const o={label:x.name,data:x.data,backgroundColor:circ?PAL2:(ln||t==='radar')?c+(t==='line'?'':'33'):c,borderColor:circ?'transparent':c,borderWidth:2,tension:.3,pointRadius:(ln||(t==='combo'&&j))?2:0,fill:t==='area'||t==='radar'};
+  if(t==='combo'){o.type=j?'line':'bar';o.yAxisID=j?'y1':'y';if(j)o.order=0}return o});
+ const sc=(circ||t==='radar')?{}:{x:{stacked:t==='stack'},y:{stacked:t==='stack',beginAtZero:true}};
+ if(t==='combo')sc.y1={position:'right',grid:{drawOnChartArea:false},beginAtZero:true};
+ charts[i]=new Chart($('#c'+i),{type:({hbar:'bar',stack:'bar',combo:'bar',area:'line'})[t]||t,data:{labels:p.labels,datasets:ds},options:{indexAxis:t==='hbar'?'y':'x',responsive:true,maintainAspectRatio:false,scales:sc,plugins:{legend:{display:circ||sets.length>1,position:circ?'right':'top'}}}})}
+/* ---------- password-protected workbooks (decrypted by the server, nothing is stored) ---------- */
+function isEnc(u8){if(!(u8[0]===0xD0&&u8[1]===0xCF&&u8[2]===0x11&&u8[3]===0xE0))return false;try{return XLSX.CFB.read(u8,{type:'array'}).FileIndex.some(x=>x.name==='EncryptionInfo')}catch(e){return false}}
+async function serverDecrypt(buf,pw){const fd=new FormData();fd.append('file',new Blob([buf]),'locked.xlsx');fd.append('password',pw);
+ const r=await fetch('/api/decrypt',{method:'POST',body:fd,credentials:'same-origin'});
+ if(!r.ok){let m='';try{m=(await r.json()).error}catch(e){}throw new Error(m==='WRONG_PW'?'WRONG_PW':(m||'decryption failed'))}
+ return new Uint8Array(await r.arrayBuffer())}
+function askPw(msg){return new Promise(res=>{$('#ur').innerHTML=`<div class="card"><h2>Password required</h2><div class="mu">${esc(msg)}</div><div class="row" style="justify-content:flex-start;margin-top:10px"><input id="pw" type="password" placeholder="Workbook password" style="max-width:320px"><button class="btn" id="pk">Unlock</button><button class="btn" id="pc" style="background:var(--mu)">Cancel</button></div></div>`;$('#pw').focus();$('#pk').onclick=()=>res($('#pw').value);$('#pw').onkeydown=e=>{if(e.key==='Enter')res($('#pw').value)};$('#pc').onclick=()=>res(null)})}
+async function analyze(buf,name){
+ st('Analyzing '+name+'\u2026');await new Promise(r=>setTimeout(r,40));
+ try{
+  if(isEnc(buf)){let msg='This workbook is password-protected. Enter the password to open it. The password is sent only to your own server to open the file. It is not saved.';
+   for(;;){const pw=await askPw(msg);if(pw===null){$('#ur').innerHTML='';return st('Cancelled.')}
+    st('Decrypting\u2026 this can take a few seconds');
+    try{buf=await serverDecrypt(buf,pw);break}catch(e){if(e.message==='WRONG_PW'){msg='Wrong password. Try again.';st('')}else throw e}}}
+  const wb=XLSX.read(buf,{type:'array',cellDates:true});
+  sheets=wb.SheetNames.map(n=>parseSheet(n,wb.Sheets[n])).filter(s=>s.rows.length>0);
+  if(!sheets.length)throw new Error('no data rows found');
+  sheets.forEach(s=>s.dom=detect(s));
+  const big=(l)=>l.reduce((a,b)=>b.score>a.score?b:a),named=sheets.filter(s=>/master|database|working production|main data/i.test(s.name)),m=named.length?big(named):big(sheets);m.master=true;cur=m;
+  st('');renderUp(name);renderDash();jpost('/api/activity',{filename:name,sheets:sheets.length,master:m.name.trim()}).catch(()=>{})}
+ catch(e){st('Could not read this file ('+e.message+'). Supported: .xlsx, .xlsm, .xls, .csv, sheet-protected files, and Excel 2010+ password-encrypted files.',1)}}
+async function handle(f){curMeta={at:new Date().toLocaleString('en-IN'),by:me.username};await analyze(new Uint8Array(await f.arrayBuffer()),f.name);fi.value=''}
+function monthNote(s){
+ const dc=s.cols.findIndex(c=>c.t==='date');
+ if(s.title&&dc>=0){const cnt={};s.rows.forEach(r=>{const v=r[dc];if(v)cnt[v.getMonth()]=(cnt[v.getMonth()]||0)+1});const tp=Object.keys(cnt).sort((a,b)=>cnt[b]-cnt[a])[0];const tm=FULL.findIndex((f,i)=>new RegExp('\\b('+f+'|'+MON[i]+')\\b','i').test(s.title));
+  if(tp!==undefined&&tm>=0&&tm!==+tp)s.tmis='The '+s.name+' sheet title says '+FULL[tm]+' but its dates are mostly in '+FULL[+tp]+'.'}
+}
+/* ---------- layout normalizer: multi-row headers and day-per-column sheets ---------- */
+function normSheet(ws,n){
+ const A=XLSX.utils.sheet_to_json(ws,{header:1,raw:true,defval:null,blankrows:false}),isD=v=>(typeof v==='number'&&Number.isInteger(v)&&v>=1&&v<=31)||v instanceof Date;
+ const mt=metricSheet(A);if(mt)return{ws:XLSX.utils.aoa_to_sheet([['Parameter','UOM','Value'],...mt.map(m=>[m.label,m.uom||null,m.value])]),wide:false,title:'',pairs:mt,stated:{},layout:'metric'};
+ const sl=serialLayout(ws,n);if(sl)return sl;
+ let title='';const tt=i=>{for(let k=0;k<i;k++){const f=(A[k]||[]).filter(v=>v!==null&&v!=='');if(f.length&&f.length<=2&&typeof f[0]==='string'&&f[0].length>6){title=f[0];break}}};
+ for(let i=0;i<Math.min(15,A.length);i++){const r=A[i]||[],days=r.map((v,j)=>isD(v)?j:-1).filter(j=>j>=0);
+  if(days.length>=7&&(r[days[0]] instanceof Date||days.filter((j,k)=>k&&r[j]-r[days[k-1]]===1).length>=days.length*.7)){
+   const lab=[];for(let j=0;j<days[0];j++)if(A.slice(i+1).some(x=>x[j]!=null))lab.push(j);if(!lab.length)break;
+   const dh=r[days[0]] instanceof Date,up=A[i-1]||[];let gg='';const grp={};for(let j=days[0];j<r.length;j++){if(typeof up[j]==='string'&&up[j].trim())gg=up[j].trim();grp[j]=gg}
+   const meas=new Set(days.map(j=>grp[j]).filter(Boolean)).size>=2,out=[[...lab.map((j,x)=>typeof r[j]==='string'&&r[j].trim()?r[j].trim():'Item '+(x+1)),...(meas?['Measure']:[]),dh?'Date':'Day','Value']];
+   for(const x of A.slice(i+1)){const lb=lab.map(j=>x[j]??null);if(lb.every(v=>v===null)||/^(grand\s)?(sub)?total/i.test(String(lb[0]??lb[1]??'')))continue;
+    for(const j of days){const v=x[j];if(typeof v==='number'&&isFinite(v))out.push([...lb,...(meas?[grp[j]||'Value']:[]),dh?r[j]:'Day '+String(r[j]).padStart(2,'0'),v])}}
+   if(out.length<2)break;tt(i);return{ws:XLSX.utils.aoa_to_sheet(out,{cellDates:true}),wide:true,title}}}
+ let h=tableRow(A);
+ if(h<0){for(let i=0;i<Math.min(20,A.length);i++){const r=(A[i]||[]).filter(v=>v!==null&&v!=='');if(r.length>=2&&r.filter(v=>typeof v==='string').length>=r.length*.6){h=i;break}}}
+ if(h<0)return null;
+ if(groupRow(A,h))h--;
+ if(A[h+2]){const a=A[h],b=A[h+1]||[],na=a.filter(v=>v!==null&&v!==''),nb=b.filter(v=>v!==null&&v!==''),c=A[h+2]||[];
+  if(nb.length>=Math.max(2,na.length*.5)&&nb.every(v=>typeof v==='string')&&c.some(v=>typeof v==='number')){tt(h);return{ws:XLSX.utils.aoa_to_sheet([mergeNames(a,b),...A.slice(h+2)],{cellDates:true}),wide:false,title}}}
+ if(h>0){tt(h);return{ws:XLSX.utils.aoa_to_sheet(A.slice(h),{cellDates:true}),wide:false,title}}
+ return null}
+const _ps3=parseSheet;parseSheet=function(n,ws){trimRef(ws);let w=ws,wide=false,ti='',ex=null;try{const r=normSheet(ws,n);if(r){w=r.ws;wide=r.wide;ti=r.title;ex=r}}catch(e){}
+ const s=_ps3(n,w);s.prot=!!ws['!protect'];s.wide=wide;s.title=s.title||ti||undefined;monthNote(s);let err=0;for(const k in ws){if(k[0]!=='!'&&ws[k]&&ws[k].t==='e')err++}s.err=err;fixTotals(s);try{if(ex&&ex.pairs){s.pairs=ex.pairs;s.stated=ex.stated;s.daily=ex.daily;s.layout=ex.layout;s.hdrfig=ex.hdrfig||[]}else harvest(ws,s);checkStated(s)}catch(e){}noCache(ws,s);return s};
+
+/* ---------- workbook-driven KPI engine ---------- */
+const GEN=/^(value|qty|quantity|amount|total|weight|kg|nos|pcs|hours|hrs|minutes|mins|count|rate|no)$/i,PCT=/%|percent|efficien|yield|utili[sz]|ratio|oee|achiev/i,AVG=/\b(rate|price|avg|average|age|length|size|mandrel)\b|per\s?(pcs|piece|unit|kg|mtr|meter)|gross\s*wt/i;
+const PL=/\b(schedule[d]?|plan(ned)?|target|budget(ed)?|standard|forecast|required|ordered?)\b/i,AC=/\b(actual|produc(tion|ed)|prod|achieved|output|done|completed|sales?|dispatch(ed)?|packed|received)\b/i;
+const PLg=new RegExp(PL.source,'gi'),ACg=new RegExp(AC.source,'gi'),pkey=c=>c.n.toLowerCase().replace(PLg,'').replace(ACg,'').replace(/[^a-z]+/g,' ').trim();
+const cs=h=>{let t=String(h).replace(/_+/g,' ').replace(/\s*[\(\[].*?[\)\]]/g,'').replace(/\s+/g,' ').replace(/[.:]+$/,'').trim();if(t===t.toUpperCase()&&/[A-Z]/.test(t))t=t.split(' ').map((w,i)=>w.length>3?(i?w.toLowerCase():w[0]+w.slice(1).toLowerCase()):w).join(' ');return t};
+const unitOf=n=>PCT.test(n)?'%':/value|amount|revenue|cost|price|salary|sales|income|expense|\u20b9/i.test(n)&&!/qty|quantity/i.test(n)?'\u20b9':/hours|hrs/i.test(n)?'hrs':/\bmins?\b|minutes|down\s?time/i.test(n)?'mins':/duration/i.test(n)?'hrs':/kg|weight|consum|compound/i.test(n)?'kg':/qty|quantity|pcs|nos|units|count|output|produc|packed|dispatch/i.test(n)?'pcs':'';
+const mk=(n,v,u)=>({n,v,u:u==='%'||u==='\u20b9'?'':u,t:u==='%'?'p':u==='\u20b9'?'c':'n'}),RK={'\u20b9':0,pcs:1,kg:2,hrs:3,mins:3,'%':4,'':5};
+function kpisOf(s,max){
+ const out=[],seen=new Set(),push=k=>{if(!k||k.v==null||!isFinite(k.v))return;const key=Math.round(k.v*100)+k.u+k.t;if(seen.has(key))return;seen.add(key);out.push(k)};
+ const nums=s.cols.filter(c=>c.t==='num'),sm=c=>{const st=s.stated&&s.stated[c.n];return st!==undefined?st:vs(s,c).reduce((a,b)=>a+b,0)};
+ (s.pairs||[]).forEach(p=>push(figOf(p.label,p.value,p.uom)));
+ (s.hdrfig||[]).forEach(f=>{const c=s.cols.find(x=>x.n===f.col&&x.t==='num');if(!c||AVG.test(f.col))return;if(PCT.test(f.col)){push(figOf(f.col,f.value));return}
+  const sum=vs(s,c).reduce((a,b)=>a+b,0);if(Math.abs(f.value-sum)<=Math.max(1,Math.abs(f.value)*.01))return;
+  push(figOf(/value|amount|cost|price/i.test(f.col)?f.col:f.col+' value',f.value,'\u20b9'))});
+ if(s.wide){const vi=s.cols.findIndex(c=>/^Value/.test(c.n)),ki=Math.max(0,s.cols.findIndex(c=>c.n==='Measure')),t=new Map(),n=new Map();s.rows.forEach(r=>{if(r[vi]==null)return;t.set(r[ki],(t.get(r[ki])||0)+r[vi]);n.set(r[ki],(n.get(r[ki])||0)+1)});
+  [...t.entries()].filter(e=>e[1]).sort((a,b)=>Math.abs(b[1])-Math.abs(a[1])).forEach(e=>{const u=unitOf(String(e[0]));push(mk(cs(e[0]),u==='%'?e[1]/n.get(e[0]):e[1],u))});return out.slice(0,max)}
+ const lab=s.cols.find(c=>(c.t==='text'||c.t==='cat'||c.t==='id')&&c.uniq>=s.rows.length*.9);
+ if(lab&&nums.length&&s.rows.length>=2&&s.rows.length<=30&&(/summ|mis|kpi|report|abstract/i.test(s.name)||/particular|metric|kpi|parameter|description/i.test(lab.n))){
+  const li=s.cols.indexOf(lab),use=nums.slice(0,2);
+  use.forEach(c=>{const ci=s.cols.indexOf(c);s.rows.forEach(r=>{if(r[li]!=null&&r[ci]!=null)push(mk(cs(r[li])+(use.length>1?' ('+cs(c.n)+')':''),r[ci],unitOf(r[li]+' '+c.n)))})});if(out.length)return out.slice(0,max)}
+ const fcs=(re,ex)=>nums.filter(c=>re.test(c.n.toLowerCase())&&!(ex&&ex.test(c.n.toLowerCase())));
+ let np=0;for(const p of fcs(PL))for(const a of fcs(AC,PL)){if(np<2&&pkey(p)===pkey(a)){const sp=sm(p);if(sp){push(mk('Plan vs actual ('+(pkey(p)||unitOf(p.n)||'qty')+')',sm(a)*100/sp,'%'));np++}}}
+ const RJ=/reject|scrap|defect|waste|rework/,rj=fcs(RJ)[0],pt=fcs(/produc|output|total|qty|quantity/,/reject|scrap|defect|waste|rework|schedul|plan|target/)[0];
+ if(rj&&pt&&sm(pt))push(mk('Rejection rate',sm(rj)*100/sm(pt),'%'));
+ nums.filter(c=>c.n.length>2&&!/\b(s\.?\s?no|sr\.?\s?no|sl\.?\s?no)\b/i.test(c.n)&&!/^Column \d+$/.test(c.n)&&!(s.pairs||[]).some(p=>cs(p.label).toLowerCase()===cs(c.n).toLowerCase())).map(c=>({c,u:unitOf(c.n)||(GEN.test(c.n.trim())&&!AVG.test(c.n)?unitOf(s.name):'')})).sort((a,b)=>RK[a.u]-RK[b.u]).slice(0,8).forEach(({c,u})=>{const v=vs(s,c),st=s.stated&&s.stated[c.n],sum=st!==undefined?st:v.reduce((a,b)=>a+b,0);if(!v.length||!sum)return;
+  const av=u==='%'||AVG.test(c.n),nm=(GEN.test(c.n.trim())?(AVG.test(c.n)?'':cs(s.name.replace(/sheet\s*\d*/i,'').trim()||s.name)+' ')+c.n.trim().toLowerCase():cs(c.n));
+  push(mk((av&&u!=='%'?'Average ':'')+nm,av?v.reduce((a,b)=>a+b,0)/v.length:sum,u))});
+ const d=DOM[s.dom];if(d&&s.conf>=45&&s.hits>=3)d.k.forEach(x=>{if(/orders$|transactions$|records$/i.test(x[0]))return;try{const v=x[1](s);if(v)push(mk(x[0],v,x[2]==='p'?'%':x[2]==='c'?'\u20b9':unitOf(x[0])))}catch(e){}});
+ return out.slice(0,max)}
+/* ---------- figures written in sheet headers, footers and total rows ---------- */
+function fixTotals(s){const is=v=>typeof v==='string'&&/^(grand\s|sub\s?)?total\b/i.test(v.trim()),b=s.rows.length;
+ s.rows=s.rows.filter(r=>!(r.some(is)&&r.some(v=>typeof v==='number')));s.totals+=b-s.rows.length}
+const nnv=v=>v!==null&&v!==undefined&&v!=='',numv=v=>typeof v==='number'&&isFinite(v),strv=v=>typeof v==='string'&&v.trim()!=='';
+function tableRow(A){const sc=i=>{const cols=(A[i]||[]).map((v,j)=>strv(v)?j:-1).filter(j=>j>=0);if(cols.length<3)return -1;let tot=0,ok=0;
+  cols.forEach(j=>{let n=0,m=0;for(let k=1;k<=8&&i+k<A.length;k++){const v=A[i+k][j];if(numv(v))n++;else if(strv(v))m++}if(n+m>=3){tot++;ok+=Math.max(n,m)/(n+m)}});return tot>=2?ok/tot:-1};
+ let h=-1,best=.7;for(let i=0;i<Math.min(30,A.length-3);i++){const c=sc(i);if(c>best+.001){best=c;h=i}}return h}
+function groupRow(A,h){if(h<1)return false;const g=A[h-1]||[],b=(A[h]||[]).filter(nnv);return g.filter(strv).length>=3&&!g.some(numv)&&b.length>=2&&b.every(v=>typeof v==='string')}
+function mergeNames(a,b){let g='';return a.map((v,j)=>{if(nnv(v))g=String(v).trim();const sb=typeof b[j]==='string'?b[j].trim():'';return sb?(g&&sb!==g?g+' '+sb:sb):(nnv(v)?String(v).trim():null)})}
+function harvest(ws,s){
+ const A=XLSX.utils.sheet_to_json(ws,{header:1,raw:true,defval:null,blankrows:false});
+ const h=tableRow(A);if(h<0)return;
+ const grp=groupRow(A,h),top=grp?h-1:h,hd=(grp?mergeNames(A[h-1],A[h]):A[h]).map(v=>strv(v)?v.trim():null),pairs=[],stated={},BAD=/year|month|date|\bno\b|sr\b|code|\bid\b|shift|week|day/i;
+ const add=(label,value,src)=>{label=String(label).trim().replace(/[:\-\u2013=]+$/,'').trim();if(label.length<3||label.length>60||BAD.test(label)||pairs.some(p=>p.label===label&&p.value===value))return;pairs.push({label,value,src})};
+ const same=(r,src)=>{for(let j=0;j<r.length;j++)if(strv(r[j])&&!/^(grand\s|sub\s?)?total/i.test(r[j].trim())){const k=numv(r[j+1])?j+1:(!nnv(r[j+2-1])&&numv(r[j+2])?j+2:-1);if(k>0)add(r[j],r[k],src)}};
+ for(let i=0;i<top;i++){const r=A[i]||[],nx=A[i+1]||[],ls=r.filter(strv).length;
+  if(ls>=2&&i+1<top){const al=r.map((v,j)=>strv(v)&&numv(nx[j])?j:-1).filter(j=>j>=0);
+   if(al.length>=2){al.forEach(j=>{add(r[j],nx[j],'header block');if(hd.includes(r[j].trim()))stated[r[j].trim()]=nx[j]});i++;continue}}
+  const al=r.map((v,j)=>numv(v)&&hd[j]?j:-1).filter(j=>j>=0);
+  if(al.length>=2&&ls<=1){al.forEach(j=>{stated[hd[j]]=r[j]});continue}
+  same(r,'header block')}
+ for(let i=h+1;i<A.length;i++){const r=A[i]||[],cells=r.filter(nnv);
+  if(r.some(v=>strv(v)&&/^(grand\s|sub\s?)?total\b/i.test(v.trim()))){r.forEach((v,j)=>{if(numv(v)&&hd[j]&&stated[hd[j]]===undefined)stated[hd[j]]=v})}
+  else if(i>=A.length-12&&cells.length===2&&cells.filter(numv).length===1&&cells.find(numv)!==0)same(r,'footer')}
+ s.pairs=pairs;s.stated=stated}
+function checkStated(s){s.mism=[];Object.entries(s.stated||{}).forEach(([k,v])=>{const c=s.cols.find(x=>x.n===k&&x.t==='num');if(!c||!v||PCT.test(k)||AVG.test(k))return;const sum=vs(s,c).reduce((a,b)=>a+b,0);if(sum&&v/sum>.5&&v/sum<2&&Math.abs(v-sum)>Math.max(1,Math.abs(v)*.01))s.mism.push(k+': stated '+v.toLocaleString('en-IN')+', rows add up to '+Math.round(sum).toLocaleString('en-IN'))})}
+function noCache(ws,s){let n=0;for(const k in ws){const c=ws[k];if(k[0]!=='!'&&c&&c.f&&c.v===undefined)n++}s.nocache=n}
+function headCard(list){const rows=[];list.forEach(s=>{(s.pairs||[]).forEach(p=>rows.push([s.name,p.label,p.value,p.src,p.uom]));(s.hdrfig||[]).forEach(f=>{if(AVG.test(f.col))return;rows.push([s.name,/value|amount|cost|price/i.test(f.col)||PCT.test(f.col)?f.col:f.col+' value',f.value,'header block',PCT.test(f.col)?'%':'\u20b9'])});Object.entries(s.stated||{}).forEach(([k,v])=>rows.push([s.name,k+' (total row)',v,'total row','']))});
+ return det('All figures written in sheet headers and totals ('+rows.length+')',rows.length?'<div class="tw"><table><tr><th>Sheet</th><th>Figure</th><th>Value</th><th>Found in</th></tr>'+rows.slice(0,200).map(r=>{const f=figOf(r[1],r[2],r[4]);return '<tr><td>'+esc(r[0].trim())+'</td><td>'+esc(f.n)+'</td><td>'+fmt(f.v,f.t)+(f.u?' '+f.u:'')+'</td><td>'+esc(r[3])+'</td></tr>'}).join('')+'</table></div>':'')}
+/* ---------- plant-style sheet reader: serial-number tables, day columns, MIS parameter tables ---------- */
+function trimRef(ws){let r1=-1,c1=-1;for(const k in ws){if(k[0]==='!')continue;const c=ws[k];if(c.v===undefined||c.v===null||c.v==='')continue;const a=XLSX.utils.decode_cell(k);if(a.r>r1)r1=a.r;if(a.c>c1)c1=a.c}
+ if(r1>=0)ws['!ref']=XLSX.utils.encode_range({s:{r:0,c:0},e:{r:r1,c:c1}})}
+const uomUnit=u=>{u=String(u||'').toLowerCase().replace(/[^a-z%\u20b9]/g,'');return u==='%'?'%':/^(hrs?|hours?)$/.test(u)?'hrs':/^mins?$/.test(u)?'mins':/^kgs?$/.test(u)?'kg':/^(pcs|nos|no|qty|units?)$/.test(u)?'pcs':/^(rs|inr|\u20b9|lacs?|lakhs?)$/.test(u)?'\u20b9':''};
+function figOf(label,v,uom){const u=uomUnit(uom)||(PCT.test(label)||/\bvs\b|versus/i.test(label)?'%':unitOf(label));return mk(cs(label),u==='%'&&Math.abs(v)<=1.5?v*100:v,u)}
+function metricSheet(A){
+ let mi=-1,lc=-1;for(let i=0;i<Math.min(12,A.length)&&mi<0;i++)(A[i]||[]).forEach((v,j)=>{if(mi<0&&typeof v==='string'&&/^\s*(parameters?|particulars?|kpis?|metrics?)\s*$/i.test(v)){mi=i;lc=j}});
+ if(mi<0)return null;
+ const W=Math.max(...A.slice(mi,mi+3).map(r=>(r||[]).length)),hdr=j=>[0,1,2].map(k=>(A[mi+k]||[])[j]).filter(strv).join(' ').toLowerCase(),cnt=j=>A.slice(mi+2).filter(r=>numv((r||[])[j])).length;
+ let uc=-1,vc=-1;for(let j=0;j<W;j++)if(uc<0&&/\buom\b|\bunit/.test(hdr(j)))uc=j;
+ for(let j=lc+1;j<W&&vc<0;j++)if(j!==uc&&/total|actual|achiev|value/.test(hdr(j))&&cnt(j)>=3)vc=j;
+ if(vc<0)for(let j=W-1;j>lc&&vc<0;j--)if(j!==uc&&cnt(j)>=3)vc=j;
+ if(vc<0)return null;
+ const m=[];for(let i=mi+1;i<A.length;i++){const r=A[i]||[],l=r[lc],v=r[vc];if(strv(l)&&numv(v)&&l.trim().length>2&&!m.some(x=>x.label===l.trim()&&x.value===v))m.push({label:l.trim().replace(/\s+/g,' '),value:v,uom:uc>=0&&strv(r[uc])?r[uc].trim():'',src:'MIS table'})}
+ return m.length>=3?m:null}
+function serialLayout(ws,sn){
+ const A=XLSX.utils.sheet_to_json(ws,{header:1,raw:true,defval:null,blankrows:true}),R=r=>A[r]||[],clean=v=>String(v).replace(/\s+/g,' ').trim();
+ let ds=-1,sc=-1;
+ for(let c=0;c<4&&ds<0;c++)for(let r=1;r<Math.min(A.length-2,40)&&ds<0;r++){if(R(r)[c]===1){const nx=[];for(let k=r+1;k<Math.min(A.length,r+4)&&nx.length<2;k++){const v=R(k)[c];if(numv(v))nx.push(v)}if(nx[0]===2&&nx[1]===3){ds=r;sc=c}}}
+ if(ds<0)return null;
+ let end=ds;for(let r=A.length-1;r>ds;r--){const v=R(r)[sc];if(numv(v)&&Number.isInteger(v)){end=r;break}}
+ const nst=r=>R(r).filter(strv).length,band=[];let sk=0;
+ for(let r=ds-1;r>=0&&band.length<4;r--){const n=nst(r);if(n>=4)band.unshift(r);else if(!band.length&&sk<2&&n<=2)sk++;else break}
+ if(!band.length)return null;
+ const top=band[0];let W=0;for(let r=top;r<=Math.min(A.length-1,ds+30);r++)W=Math.max(W,R(r).length);
+ const fill={};(ws['!merges']||[]).forEach(m=>{if(band.includes(m.s.r)&&m.e.c>m.s.c){const v=R(m.s.r)[m.s.c];if(strv(v))for(let j=m.s.c;j<=m.e.c;j++)(fill[m.s.r]=fill[m.s.r]||{})[j]=clean(v)}});
+ const cell=(r,j)=>{const v=R(r)[j];return strv(v)?clean(v):(fill[r]&&fill[r][j])||null};
+ let dayRow=-1,dayCols=[];
+ band.forEach(r=>{const c=[];for(let j=0;j<W;j++){const v=R(r)[j];if(numv(v)&&Number.isInteger(v)&&v>=1&&v<=31)c.push(j)}
+  if(c.length>=7&&c.length>dayCols.length&&c.filter((j,k)=>k&&R(r)[j]-R(r)[c[k-1]]===1).length>=c.length*.6){dayRow=r;dayCols=c}});
+ const isDay=new Set(dayCols),parts=(j,skip)=>{const p=[];band.forEach(r=>{if(r===skip)return;const c=cell(r,j);if(c&&!p.includes(c))p.push(c)});return p.join(' ')};
+ const names=[],gn=[];for(let j=0;j<W;j++){names[j]=isDay.has(j)?'':parts(j,-1);gn[j]=isDay.has(j)?parts(j,dayRow):''}
+ const dateTag={};for(let r=Math.max(0,top-3);r<ds;r++){const dj=[];for(let j=0;j<W;j++)if(R(r)[j] instanceof Date)dj.push(j);if(dj.length>=3){let cu=null;for(let j=dj[0];j<W;j++){if(R(r)[j] instanceof Date)cu=R(r)[j];dateTag[j]=cu}break}}
+ const tag=[],base=[];for(let j=0;j<W;j++){if(isDay.has(j)){tag[j]='d'+R(dayRow)[j];base[j]=gn[j]}else if(dateTag[j]&&names[j]){tag[j]='t'+(+dateTag[j]);base[j]=names[j]}}
+ const gm=new Map();tag.forEach((t,j)=>{if(!gm.has(base[j]))gm.set(base[j],[]);gm.get(base[j]).push(j)});
+ const fold=[...gm.entries()].filter(e=>new Set(e[1].map(j=>tag[j])).size>=5),folded=new Set(fold.flatMap(e=>e[1]));
+ const keep=[];for(let j=0;j<W;j++)if(!folded.has(j)&&names[j])keep.push(j);
+ const used={},hdr=keep.map(j=>{const n=names[j];used[n]=(used[n]||0)+1;return used[n]>1?n+' '+used[n]:n}),kn={};keep.forEach((j,i)=>kn[j]=hdr[i]);
+ const fn=fold.map(e=>(e[0]?cs(e[0]):cs(String(sn).trim()||'Total'))+' \u2013 month total'),keepSet=new Set(keep);
+ const lbl=t=>{if(t[0]==='d')return t.slice(1);const d=new Date(+t.slice(1)+3e5);return String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')};
+ const daily=fold.map((e,i)=>{const tg=[...new Set(e[1].map(j=>tag[j]))],ix={};tg.forEach((t,k)=>ix[t]=k);return{name:fn[i],labels:tg.map(lbl),data:tg.map(()=>0),ix}});
+ const rows=[];
+ for(let r=ds;r<=end;r++){const row=R(r),vals=keep.map(j=>row[j]??null);if(vals.filter(v=>v!==null).length<2)continue;
+  const fv=fold.map((e,i)=>{let s=null;e[1].forEach(j=>{const v=row[j];if(numv(v)){s=(s||0)+v;daily[i].data[daily[i].ix[tag[j]]]+=v}});return s});rows.push([...vals,...fv])}
+ const stated={},pairs=[],hdrfig=[],hf=(j,v)=>{if(!hdrfig.some(x=>x.col===kn[j]))hdrfig.push({col:kn[j],value:v})},BAD=/year|month|date|\bno\b|sr\b|code|\bid\b|shift|week|\bday\b/i;
+ const addp=(label,value)=>{label=clean(label).replace(/[:\-\u2013=]+$/,'').trim();if(label.length<3||label.length>60||BAD.test(label)||pairs.some(p=>p.label===label&&p.value===value))return;if(GEN.test(label))label=cs(String(sn).trim())+' '+label.toLowerCase();pairs.push({label,value,src:'header block'})};
+ band.forEach(r=>{if(r!==dayRow)R(r).forEach((v,j)=>{if(numv(v)&&keepSet.has(j))hf(j,v)})});
+ for(let r=0;r<top;r++){const row=R(r);row.forEach((v,j)=>{if(!numv(v)||folded.has(j))return;let l=null;for(let k=j-1;k>=Math.max(0,j-2);k--){if(strv(row[k])){l=row[k];break}if(numv(row[k]))break}
+  if(l)addp(l,v);else if(keepSet.has(j))hf(j,v)})}
+ for(let r=end+1;r<A.length;r++){const row=R(r);if(row.some(v=>strv(v)&&/total/i.test(v)))row.forEach((v,j)=>{if(numv(v)&&keepSet.has(j)&&stated[kn[j]]===undefined)stated[kn[j]]=v})}
+ let title='';for(let r=0;r<top&&!title;r++){const f=R(r).find(v=>strv(v)&&v.trim().length>=8);if(f)title=clean(f)}
+ return{ws:XLSX.utils.aoa_to_sheet([[...hdr,...fn],...rows],{cellDates:true}),wide:false,title,pairs,stated,hdrfig,layout:'serial',daily:daily.map(d=>({name:d.name,labels:d.labels,data:d.data.map(v=>Math.round(v*100)/100)}))}}
+function dailySpec(s){const d=(s.daily||[]).filter(x=>x.data.length>=5&&x.data.some(v=>v));if(!d.length)return null;
+ const top=d.map(x=>({x,t:x.data.reduce((a,b)=>a+b,0)})).sort((a,b)=>b.t-a.t).map(o=>o.x),f=top[0],sets=top.filter(x=>x.labels.length===f.labels.length&&unitOf(x.name)===unitOf(f.name)).slice(0,3),nm=x=>x.name.replace(/ \u2013 month total$/,'');
+ return{title:'Daily '+sets.map(nm).join(', '),type:sets.length===2?'combo':sets.length===1?'bar':'line',sheet:s.name,labels:f.labels,sets:sets.map(x=>({name:nm(x),data:x.data}))}}
+function chartsOf(s){if(s.layout==='metric')return [];const o=chartsBase(s),d=dailySpec(s);if(d)o.unshift(d);return o.slice(0,8)}
+function dataThrough(list){let day=null,dt=null;
+ list.forEach(s=>{(s.daily||[]).forEach(d=>d.data.forEach((v,i)=>{if(v&&(day===null||i>day.i))day={i,l:d.labels[i]}}));s.cols.forEach((c,i)=>{if(c.t==='date')s.rows.forEach(r=>{const v=r[i];if(v instanceof Date&&v.getFullYear()>2000&&(dt===null||v>dt))dt=v})})});
+ return [day?'Last day with entries: '+(/^\d+$/.test(day.l)?'day '+day.l:day.l):'',dt?'Latest date in data: '+dt.toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'}):''].filter(Boolean).join(' \u00b7 ')}
+let curMeta={at:'',by:''};
+const setTheme=x=>{document.documentElement.dataset.theme=x;try{localStorage.setItem('jp_theme',x)}catch(e){}};
+try{const x=localStorage.getItem('jp_theme');if(x)document.documentElement.dataset.theme=x}catch(e){}
+$('#thm').onclick=()=>{const dk=document.documentElement.dataset.theme?document.documentElement.dataset.theme==='dark':matchMedia('(prefers-color-scheme: dark)').matches;setTheme(dk?'light':'dark');if(!$('#dash').hidden&&sheets.length)renderDash()};
+/* ---------- executive summary: the figures that matter, taken from the workbook ---------- */
+const JUNK=/\b(s\.?\s?no|sr\.?\s?no|sl\.?\s?no)\b|^Column \d+$|remarks?$/i;
+const CATS=[
+ ['Production vs schedule',/schedul|target|complet|prodn|production|produced|output|achiev|adher|\bvs\b/,/hrs|hours|bal|till|per\s?day|daily|cover|rate|compound|yarn|req|\bft\b|need\s*to|confirm|line/],
+ ['Dispatch',/dispatch|despatch|desp\b|desp\./,/last month|rate|per\s?day/],
+ ['Stock & WIP',/stock|wip|hollow|inventory|closing|avail/,/opening|rate|days|hrs|hours/],
+ ['Quality',/reject|scrap|defect|end\s?cut|waste|rework/,/rate\b.*per/],
+ ['Capacity & downtime',/capacity|hrs|hours|down\s?time|efficien|utili|\brun\b|oee/,/dry|target|per\s?day/]];
+function schedAct(s){const num=s.cols.filter(c=>c.t==='num'&&!JUNK.test(c.n)),bad=/confirm|balance|bal\b|till|adher|hrs|hours|%|per\s?day|cover|rate|value/i;
+ const sc=num.find(c=>/^total\s*schedule\b|^schedule\b|customer\s*sched/i.test(c.n)&&!bad.test(c.n));
+ const ac=num.find(c=>/complet|^total\s*prod|^production\b/i.test(c.n)&&!/schedul|plan|target|\bft\b|compound|yarn|vul|ext|till|per\s?day|%/i.test(c.n)&&!bad.test(c.n));
+ return sc&&ac?{sc,ac}:null}
+function candidates(s){const out=[],base=/summ|overview|dashboard|kpi/i.test(s.name)?6:s.master?3:2,hf={};(s.hdrfig||[]).forEach(f=>hf[f.col]=f.value);
+ (s.pairs||[]).forEach(p=>out.push({...figOf(p.label,p.value,p.uom),sh:s.name,score:p.src==='MIS table'?5:4}));
+ s.cols.filter(c=>c.t==='num'&&c.n.length>2&&!JUNK.test(c.n)).forEach(c=>{const v=vs(s,c);if(!v.length)return;const sum=v.reduce((a,b)=>a+b,0),pct=PCT.test(c.n),hv=hf[c.n];
+  if(pct){if(hv!==undefined)out.push({...figOf(c.n,hv),sh:s.name,score:base+1});return}
+  if(AVG.test(c.n))return;
+  const k={...mk(cs(c.n),sum,unitOf(c.n)),sh:s.name,score:base};
+  if(hv&&Math.abs(hv-sum)>Math.max(1,Math.abs(hv)*.01)){k.u=k.u||'pcs';k.alt=fmt(hv,'c');k.altv=hv}
+  out.push(k)});
+ const p=schedAct(s);if(p){const a=vs(s,p.ac).reduce((x,y)=>x+y,0),b=vs(s,p.sc).reduce((x,y)=>x+y,0);
+  if(b)out.push({...mk(cs(p.ac.n)+' vs schedule',a*100/b,'%'),sh:s.name,score:8});
+  if(hf[p.ac.n]&&hf[p.sc.n])out.push({...mk(cs(p.ac.n)+' vs schedule (value)',hf[p.ac.n]*100/hf[p.sc.n],'%'),sh:s.name,score:8})}
+ return out}
+function execSummary(list){const all=[];list.forEach(s=>all.push(...candidates(s)));
+ const own=new Map();all.forEach(k=>{if(k.altv)own.set(Math.round(Math.abs(k.altv))+'c',k.score)});
+ const best=new Map();all.forEach(k=>{if(!k.v||(k.t==='p'&&Math.abs(k.v)<.05))return;if(!k.alt&&own.has(Math.round(Math.abs(k.v))+k.t)&&own.get(Math.round(Math.abs(k.v))+k.t)>=k.score)return;const key=Math.round(Math.abs(k.v))+k.t;const o=best.get(key);if(!o||k.score>o.score)best.set(key,k)});
+ const secs=CATS.map(c=>({title:c[0],items:[]}));
+ [...best.values()].forEach(k=>{const nm=k.n.toLowerCase(),i=CATS.findIndex(c=>c[1].test(nm)&&!c[2].test(nm));if(i>=0)secs[i].items.push(k)});
+ secs.forEach(sec=>{sec.items.sort((a,b)=>b.score-a.score||Math.abs(b.v)-Math.abs(a.v));sec.items=sec.items.slice(0,/^(Production|Stock)/.test(sec.title)?6:4)});
+ let out=secs.filter(s=>s.items.length);
+ if(out.reduce((a,s)=>a+s.items.length,0)<4){const m=list.find(s=>s.master)||list[0];out=[{title:'Key figures',items:kpisOf(m,12).map(q=>({...q,sh:m.name}))}]}
+ return out}
+function execCharts(list){const out=[],add=p=>{if(p&&out.length<8)out.push(p)};
+ const S=list.find(s=>schedAct(s)&&/summ|overview/i.test(s.name))||list.find(s=>schedAct(s)),P=S&&schedAct(S);
+ if(S){const cat=S.cols.find(c=>c.t==='cat'&&/customer|client|party/i.test(c.n))||S.cols.find(c=>c.t==='cat');
+  if(cat){const a=aggM(S,cat,[P.sc,P.ac],8);if(a.labels.length>1)add({title:'Schedule vs completion by '+cs(cat.n),type:'bar',sheet:S.name,...a})}
+  const st=S.cols.filter(c=>c.t==='num'&&/stock|wip|hollow/i.test(c.n)&&!/opening|value|%|rate/i.test(c.n)&&!JUNK.test(c.n));
+  if(st.length>=2)add({title:'Stock & WIP by stage (qty)',type:'hbar',sheet:S.name,labels:st.map(c=>cs(c.n)),sets:[{name:'Qty',data:st.map(c=>Math.round(vs(S,c).reduce((a,b)=>a+b,0)))}]});
+  const nm=S.cols.find(c=>(c.t==='text'||c.t==='cat')&&c.uniq>12&&c!==cat);
+  if(nm){const a=aggM(S,nm,[P.ac],10);if(a.labels.length>1)add({title:'Top 10 '+cs(nm.n)+' by completion qty',type:'hbar',sheet:S.name,...a})}}
+ list.forEach(s=>{if(/pack|dispatch|vul|ext|prod/i.test(s.name))add(dailySpec(s))});
+ const dt=list.find(s=>/down\s?time/i.test(s.name));if(dt)add(chartsBase(dt)[0]);
+ if(out.length<4)list.forEach(x=>chartsOf(x).slice(0,2).forEach(add));
+ return out}
+function kpiCard(q){return '<div class="card kpi"><div class="n">'+esc(q.n)+'</div><div class="v">'+fmt(q.v,q.t)+'</div><div class="n">'+esc([q.alt?q.alt+' value':'',q.u,q.sh].filter(Boolean).join(' \u00b7 '))+'</div></div>'}
+function det(title,body){return body?'<details class="card"><summary>'+title+'</summary>'+body+'</details>':''}
+if(window.Chart){Chart.defaults.font.family='Figtree,Segoe UI,system-ui,sans-serif';Chart.defaults.elements.bar.borderRadius=6;Chart.defaults.elements.line.borderWidth=2.5};(async()=>{await loadCfg();try{enter(await api('/api/me'))}catch(e){}})();
+</script></body></html>

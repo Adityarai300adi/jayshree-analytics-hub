@@ -18,7 +18,7 @@ The console then prints two addresses:
     On this computer : http://localhost:8085
     On your network  : http://192.168.1.25:8085   <- open this on other PCs / phones
 
-**First time:** the first screen is "Create the administrator account". Only the owner (the email / mobile written in `config.ini`) can create it: verify with Google and/or a mobile OTP, then choose a username and password. Before that, do the one-time Firebase setup below.
+**First time:** the first screen is "Create the administrator account". Only the owner (the email / mobile written in `config.ini`) can create it: verify with Google, an emailed code (if configured), and/or a mobile OTP, then choose a username and password. Before that, do the one-time setup below.
 
 ## If another project already uses the port
 
@@ -39,8 +39,8 @@ exact address. Always open the address shown in the console window. To choose a 
 
 ## Set up Google sign-in and mobile OTP (once, about 10 minutes)
 
-Google verifies emails (the "Continue with Google" button) and Firebase, a free Google service, sends the SMS OTP to mobile numbers.
-Nobody has to run an SMS gateway, and no email password is stored on this server.
+Google verifies email addresses with the "Continue with Google" button, and Firebase, a free Google service, sends SMS OTPs to mobile numbers.
+Email codes can also be sent through Brevo; see [Set up email codes](#set-up-email-codes). No email account password is stored on this server.
 
 1. Open https://console.firebase.google.com and create a project (any name; you can switch Analytics off).
 2. **Build -> Authentication -> Get started -> Sign-in method:** turn **Google** ON (choose a support email) and turn **Phone** ON.
@@ -60,21 +60,34 @@ Good to know
   you choose a fake number and its 6-digit code. For real numbers Firebase has monthly SMS limits and may ask you to enable billing
   (see *Usage and billing* in the console); check its current rules.
 - The 5-attempt limit for a mobile OTP is enforced in the page; Firebase also limits wrong codes and SMS requests on its side.
-- No OTP is sent to an email address. Google confirms the email instead (the person must log in to that Google account), which is stronger.
-  Only addresses that have a Google account can use the button.
+
+## Set up email codes
+
+Email OTP works for addresses that do not use Google too, but the owner must configure Brevo before the email option appears:
+
+1. Create a Brevo account, enable transactional email, create an API key, and verify the sender email address in Brevo.
+2. Set these environment variables for the Flask server. Keep the API key private; do not put it in source code or commit it to Git:
+   - `JP_BREVO_API_KEY`: the Brevo API key.
+   - `JP_MAIL_FROM`: the verified sender email address.
+3. Restart the server. Email code controls will appear on sign-in, registration, forgot-password, and profile pages.
+
+On Windows, add both values under **Environment Variables** in Windows Settings, then close and reopen the server window.
+On Render, add them under the service's **Environment** settings and redeploy.
+The server needs outbound internet access to call Brevo. Codes expire after 10 minutes; five incorrect attempts require requesting a new code.
+The server limits email requests to 3 per address and 10 per IP per hour.
 
 ## Sign in, register and forgot password
 
-- **Sign in:** email, mobile number or username plus password, or **Continue with Google**, or **Sign in with mobile OTP**. One form for
-  everyone; the account decides whether you are an admin or a user.
-- **Register (new users):** verify your email with Google and/or your mobile number with an SMS OTP (5 attempts), then choose a username and
+- **Sign in:** email, mobile number or username plus password, **Continue with Google**, mobile OTP, or an emailed code (when configured).
+  One form for everyone; the account decides whether you are an admin or a user.
+- **Register (new users):** verify your email with Google or an emailed code, and/or your mobile number with an SMS OTP, then choose a username and
   a password, then sign in with them. No account exists until at least one contact is verified. If someone presses Continue with Google
   on the sign-in page and has no account yet, they land on the same "choose a username and password" step.
 - **First account:** only the owner's email / mobile from `config.ini` can create it; it becomes the administrator. Later registrations are
   normal users. Registration can be closed with `registration = off` in `config.ini`.
-- **Forgot password:** verify with Google or a mobile OTP, then choose a new username (you may keep the old one) and a new password.
+- **Forgot password:** verify with Google, an emailed code, or a mobile OTP, then choose a new username (you may keep the old one) and a new password.
   Only a verified email / mobile on the account works.
-- **My profile:** change your username or password, add or change a verified email / mobile, or remove them. Contacts typed in by an admin for
+- **My profile:** change your username or password, add or change a verified email (Google or email code) / mobile, or remove them. Contacts typed in by an admin for
   someone else stay "not verified" until that person confirms them here.
 - **Admin -> Users:** add or remove users and reset a password. **Admin -> Activity log:** who analyzed which file name.
 - Passwords need 8+ characters with a letter and a number. Changing a password signs that account out of every other browser.
@@ -105,49 +118,55 @@ Check in this order:
 ## Let other devices connect (Windows)
 
 - When Windows asks "Allow Python to communicate on networks?", choose **Private networks -> Allow**.
-- Or run once in an Administrator terminal:
-  `netsh advfirewall firewall add rule name="Analytics Hub" dir=in action=allow protocol=TCP localport=8085`
+- Or run `allow_network.bat` as administrator. It allows the app's default port range (8085-8134)
+  only on Windows Private networks. If you choose a custom `JP_PORT`, add a matching private-profile
+  firewall rule for that port.
 - Give the host PC a fixed IP (router "DHCP reservation") so the address never changes.
 - To start automatically at boot: Task Scheduler -> create task -> trigger "At startup" -> action: run `run.bat`.
   (Linux: a systemd service running `run.sh`.)
 
 ## Public hosting (Render)
 
-`render.yaml` prepares a Render web service with a persistent data disk. It keeps the SQLite database,
-Flask signing key, and recovery key across deploys. The disk requires a paid service; check Render's
-current pricing before creating it.
+The current `render.yaml` deploys a **free web service without a persistent disk**. Its local filesystem
+is ephemeral, so the SQLite database, Flask signing key, and recovery key can be lost after a deploy or
+service restart. Treat this configuration as a demo only. To retain data, use a Render plan that supports
+persistent disks, attach a disk, and set `JP_DATA_DIR` to that disk's mount path; check current pricing
+before choosing a paid plan.
 
 1. Put the project source in a private GitHub repository and connect that repository to Render as a Blueprint.
    Do **not** upload `data/`, `.venv/`, or `config.ini`; these are local/private and are excluded by `.gitignore`.
 2. During Blueprint setup, provide a unique, strong value for the `JP_ADMIN_PASSWORD` secret. It creates the
-   first `admin` account. Remove that environment variable after the first successful deploy; the account is
-   then stored in the persistent database.
+   first `admin` account. Do not remove the secret until persistent storage is configured and verified;
+   the current free configuration can lose its database between deployments.
 3. Use the `onrender.com` HTTPS address initially. The app binds to Render's assigned `PORT` and marks session
    cookies Secure. Add a custom domain later in Render if desired.
 4. Registration is disabled until Firebase is configured. To enable Google/SMS sign-in, add
    `JP_FIREBASE_API_KEY`, `JP_FIREBASE_AUTH_DOMAIN`, `JP_FIREBASE_PROJECT_ID`, and `JP_FIREBASE_APP_ID`
    as Render environment variables; set `JP_REGISTRATION=on` and add the Render HTTPS domain to Firebase's
    Authorized domains. Optionally set `JP_ADMIN_EMAIL`, `JP_ADMIN_PHONE`, and `JP_COUNTRY_CODE`.
+   To enable email codes, also set `JP_BREVO_API_KEY` and `JP_MAIL_FROM` in Render's environment settings.
 
-The deployment uses a **new, empty database**; it does not migrate local users or activity history. Keep
-the Render recovery key private and arrange a secure backup of the persistent disk. Do not put credentials
-or the recovery key in GitHub.
+The deployment uses a **new, empty database**; it does not migrate local users or activity history. For
+persistent deployments, keep the Render recovery key private and arrange a secure backup of the mounted
+data disk. Do not put credentials or the recovery key in GitHub.
 
 ## Settings (environment variables, all optional)
 
 | Variable | Default | Meaning |
 |---|---|---|
-| `JP_PORT` | 8085 | Port to start from. If busy, the next free port is used automatically |
+| `JP_PORT` | 8085 | Local port to start from. If busy, the next free port is used; ignored when the platform provides `PORT` |
 | `JP_HOST` | 0.0.0.0 | `127.0.0.1` = this computer only |
 | `JP_MAX_MB` | 200 | Largest upload accepted |
 | `JP_CONFIG` | `./config.ini` | Where the settings file lives |
 | `JP_ADMIN_PASSWORD` | (empty) | Optional: create the first admin `admin` from this password instead of the Google / mobile setup |
 | `JP_DATA_DIR` | ./data | Where the database and uploads live |
-| `PORT` | (platform-provided) | Used when `JP_PORT` is not set, for public hosting platforms |
+| `PORT` | (platform-provided) | Bound exactly as supplied by a hosting platform |
 | `JP_COOKIE_SECURE` | false | Set `true` when serving over HTTPS |
 | `JP_FIREBASE_API_KEY` etc. | (empty) | Optional hosting overrides: `JP_FIREBASE_AUTH_DOMAIN`, `JP_FIREBASE_PROJECT_ID`, `JP_FIREBASE_APP_ID` |
 | `JP_REGISTRATION` | from `config.ini` | Override registration (`on` / `off`) |
 | `JP_ADMIN_EMAIL`, `JP_ADMIN_PHONE`, `JP_COUNTRY_CODE` | from `config.ini` | Optional owner/contact settings for hosted Firebase flows |
+| `JP_BREVO_API_KEY` | (empty) | Brevo API key; required to send email verification codes |
+| `JP_MAIL_FROM` | (empty) | Verified Brevo sender email address; required to send email verification codes |
 
 ## Backup
 
@@ -162,10 +181,10 @@ Copy the `data/` folder (`hub.db` = users and activity log, `recovery_key.txt`, 
     run.bat / run.sh   One-click start
     data/              Created on first run (database, secret key, recovery_key.txt)
 
-API: `POST /api/login|logout|password`, `POST /api/firebase/login`, `POST /api/signup/verify|create`, `POST /api/forgot/verify|reset`,
+API: `POST /api/login|logout|password`, `POST /api/email-otp/send`, `POST /api/firebase/login`, `POST /api/signup/verify|create`, `POST /api/forgot/verify|reset`,
 `GET /api/profile`, `POST /api/profile/contact|username`, `GET|POST /api/users`, `POST|GET /api/activity`, `POST /api/decrypt`, `POST /api/forgot` (recovery key), `GET /healthz`.
-How it is checked: the browser gets a signed ID token from Firebase; the server verifies its signature with Google's public keys, the project id,
-the expiry and a sign-in time of at most 10 minutes, and only then trusts the email / mobile number inside.
+Firebase sign-ins use a signed ID token; the server verifies its signature with Google's public keys, the project id, expiry, and sign-in time.
+For email codes, the server sends through Brevo and stores a keyed hash for up to 10 minutes; a successful code is accepted once.
 
 ## How the analysis works
 
