@@ -80,9 +80,11 @@ details.card>summary{cursor:pointer;font-weight:700;list-style:none}details.card
 .or{display:flex;align-items:center;gap:10px;color:var(--mu);font-size:13px}.or::before,.or::after{content:"";flex:1;height:1px;background:var(--bd)}
 #recaptcha-box{position:fixed;right:0;bottom:0}
 .done{display:none!important}
-</style></head><body>
+</style>
+<link rel="stylesheet" href="/static/theme.css">
+</head><body>
 
-<div id="login"><div class="authwrap">
+<div id="login"><aside class="lg-hero"><svg class="strands" viewBox="0 0 600 800" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><path class="strand c" d="M-20 640C140 640 200 420 340 420S520 560 640 330"/><path class="strand a" d="M-20 560C150 560 220 330 360 330S540 470 640 240"/><path class="strand b" d="M-20 480C160 480 240 250 380 250S560 380 640 150"/><path class="strand a" d="M-20 400C170 400 260 180 400 180S570 300 640 70"/><path class="strand c" d="M-20 720C130 720 190 520 330 520S510 650 640 430"/></svg><div class="lg-copy"><h2>Every shift&#8217;s numbers, one upload away.</h2><p>Drop in today&#8217;s Excel workbook and see production, dispatch and stock as a dashboard in seconds.</p><ul><li>Works with password-protected workbooks</li><li>Sign in with Google, an email code or a mobile OTP</li><li>Your files are read in the browser and never stored</li></ul></div></aside><div class="authwrap">
 <div class="brandline"><svg width="34" height="34" viewBox="0 0 40 40" aria-hidden="true"><rect width="40" height="40" rx="11" fill="#0d7a68"/><rect x="9" y="21" width="5" height="10" rx="1.5" fill="#fff"/><rect x="17.5" y="14" width="5" height="17" rx="1.5" fill="#f2a20c"/><rect x="26" y="8" width="5" height="23" rx="1.5" fill="#fff"/></svg><span>Jayshree Polymers India Pvt. Ltd.<small>Analytics Hub</small></span></div>
 
 <form class="lg" id="lf" onsubmit="return false" hidden>
@@ -403,7 +405,7 @@ function renderUp(fn){
  show('dash')}
 
 /* ---------- workbook-wide dashboard ---------- */
-const MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],FULL=['January','February','March','April','May','June','July','August','September','October','November','December'],PAL2=['#0f766e','#b45309','#2563eb','#9333ea','#dc2626','#0891b2','#65a30d','#475569','#db2777','#ca8a04'];
+const MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],FULL=['January','February','March','April','May','June','July','August','September','October','November','December'],PAL2=['#0b8576','#f0a30a','#2f6fe4','#7c5cdb','#e0524d','#17a2b8','#8bb31f','#51657a','#d6479a','#c98a04'];
 const TY=[['bar','Bar'],['hbar','Horizontal bar'],['stack','Stacked bar'],['line','Line'],['area','Area'],['pie','Pie'],['doughnut','Doughnut'],['radar','Radar'],['polarArea','Polar area']];
 let tab='ov',fname='',shown=100;
 const _ps=parseSheet;parseSheet=function(n,ws){
@@ -709,5 +711,5 @@ function execCharts(list){const out=[],add=p=>{if(p&&out.length<8)out.push(p)};
  return out}
 function kpiCard(q){return '<div class="card kpi"><div class="n">'+esc(q.n)+'</div><div class="v">'+fmt(q.v,q.t)+'</div><div class="n">'+esc([q.alt?q.alt+' value':'',q.u,q.sh].filter(Boolean).join(' \u00b7 '))+'</div></div>'}
 function det(title,body){return body?'<details class="card"><summary>'+title+'</summary>'+body+'</details>':''}
-(async()=>{await loadCfg();try{enter(await api('/api/me'))}catch(e){}})();
+if(window.Chart){Chart.defaults.font.family='Figtree,Segoe UI,system-ui,sans-serif';Chart.defaults.elements.bar.borderRadius=6;Chart.defaults.elements.line.borderWidth=2.5};(async()=>{await loadCfg();try{enter(await api('/api/me'))}catch(e){}})();
 </script></body></html>
