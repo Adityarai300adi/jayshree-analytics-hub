@@ -95,6 +95,7 @@ details.card>summary{cursor:pointer;font-weight:700;list-style:none}details.card
 <button type="button" class="btn gbtn" id="lgoogle"><svg width="18" height="18" viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9.1 3.6l6.8-6.8C35.9 2.4 30.4 0 24 0 14.6 0 6.5 5.4 2.6 13.2l7.9 6.1C12.4 13.6 17.7 9.5 24 9.5z"/><path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v9h12.7c-.6 3-2.3 5.5-4.8 7.2l7.5 5.8c4.4-4.1 7.1-10.1 7.1-17.5z"/><path fill="#FBBC05" d="M10.5 28.7c-.5-1.5-.8-3-.8-4.7s.3-3.2.8-4.7l-7.9-6.1C.9 16.4 0 20.1 0 24s.9 7.6 2.6 10.8l7.9-6.1z"/><path fill="#34A853" d="M24 48c6.4 0 11.9-2.1 15.9-5.8l-7.5-5.8c-2.1 1.4-4.8 2.3-8.4 2.3-6.3 0-11.6-4.1-13.5-9.8l-7.9 6.1C6.5 42.6 14.6 48 24 48z"/></svg>Continue with Google</button>
 <a href="#" id="l-mobile" class="mu" style="text-align:center">Sign in with mobile OTP</a>
 <div id="l-box" hidden><div data-phone="l"></div></div>
+<div class="mu email-otp-off" hidden>Email code verification is unavailable. Ask the site owner to configure Brevo mail.</div>
 <div class="mu nofb" hidden>Google and mobile verification are not set up yet. The owner must fill in <b>config.ini</b> (see the README).</div>
 <a href="#" id="fg" class="mu">Forgot password?</a>
 <div class="swap" id="reg-wrap" hidden>New user? <a href="#" id="reg-link">Register</a></div>
@@ -103,11 +104,12 @@ details.card>summary{cursor:pointer;font-weight:700;list-style:none}details.card
 <form class="lg" id="rf" onsubmit="return false" hidden>
 <h1 id="rtitle">Register</h1>
 <div id="r1" class="lg" style="padding:0;border:0;box-shadow:none;width:auto">
-<div class="mu">Verify your email with Google, or your mobile number with an SMS OTP. You can do both.</div>
+<div class="mu">Verify your email with Google or an emailed code, or verify your mobile number with an SMS OTP. You can do more than one.</div>
 <div class="bd" id="rver" hidden style="white-space:normal"></div>
 <button type="button" class="btn gbtn" id="rgoogle"><svg width="18" height="18" viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9.1 3.6l6.8-6.8C35.9 2.4 30.4 0 24 0 14.6 0 6.5 5.4 2.6 13.2l7.9 6.1C12.4 13.6 17.7 9.5 24 9.5z"/><path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v9h12.7c-.6 3-2.3 5.5-4.8 7.2l7.5 5.8c4.4-4.1 7.1-10.1 7.1-17.5z"/><path fill="#FBBC05" d="M10.5 28.7c-.5-1.5-.8-3-.8-4.7s.3-3.2.8-4.7l-7.9-6.1C.9 16.4 0 20.1 0 24s.9 7.6 2.6 10.8l7.9-6.1z"/><path fill="#34A853" d="M24 48c6.4 0 11.9-2.1 15.9-5.8l-7.5-5.8c-2.1 1.4-4.8 2.3-8.4 2.3-6.3 0-11.6-4.1-13.5-9.8l-7.9 6.1C6.5 42.6 14.6 48 24 48z"/></svg>Continue with Google</button>
 <div class="or" id="r-or"><span>or</span></div>
 <div id="r-box"><div data-phone="r"></div></div>
+<div class="mu email-otp-off" hidden>Email code verification is unavailable. Ask the site owner to configure Brevo mail.</div>
 <div class="err" id="re"></div>
 <button class="btn" id="rnext" hidden>Next: choose username and password</button>
 <div class="mu nofb" hidden>Google and mobile verification are not set up yet. The owner must fill in <b>config.ini</b> (see the README).</div>
@@ -126,10 +128,11 @@ details.card>summary{cursor:pointer;font-weight:700;list-style:none}details.card
 <form class="lg" id="ff" onsubmit="return false" hidden>
 <h1>Forgot password</h1>
 <div id="fs1">
-<div class="mu">Prove it is you with the Google account or the mobile number on your account.</div>
+<div class="mu">Prove it is you with the Google account, an emailed code, or the mobile number on your account.</div>
 <button type="button" class="btn gbtn" id="fgoogle"><svg width="18" height="18" viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9.1 3.6l6.8-6.8C35.9 2.4 30.4 0 24 0 14.6 0 6.5 5.4 2.6 13.2l7.9 6.1C12.4 13.6 17.7 9.5 24 9.5z"/><path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v9h12.7c-.6 3-2.3 5.5-4.8 7.2l7.5 5.8c4.4-4.1 7.1-10.1 7.1-17.5z"/><path fill="#FBBC05" d="M10.5 28.7c-.5-1.5-.8-3-.8-4.7s.3-3.2.8-4.7l-7.9-6.1C.9 16.4 0 20.1 0 24s.9 7.6 2.6 10.8l7.9-6.1z"/><path fill="#34A853" d="M24 48c6.4 0 11.9-2.1 15.9-5.8l-7.5-5.8c-2.1 1.4-4.8 2.3-8.4 2.3-6.3 0-11.6-4.1-13.5-9.8l-7.9 6.1C6.5 42.6 14.6 48 24 48z"/></svg>Verify with Google</button>
 <div class="or"><span>or</span></div>
 <div data-phone="f"></div>
+<div class="mu email-otp-off" hidden>Email code verification is unavailable. Ask the site owner to configure Brevo mail.</div>
 <div class="err" id="fe"></div>
 <div class="mu nofb" hidden>Google and mobile verification are not set up yet. The owner must fill in <b>config.ini</b> (see the README).</div>
 </div>
@@ -264,7 +267,7 @@ const note=(sel,text,ok)=>{const e=$(sel);e.style.color=ok?'var(--ac)':'';e.text
 const busy=(b,on)=>{b.disabled=on};
 let CFG={},setupMode=false;
 async function loadCfg(keep){try{CFG=await api('/api/public-config')}catch(e){CFG={}}
- $('#reg-wrap').hidden=!CFG.allow_signup;document.querySelectorAll('[data-email-wrap]').forEach(n=>n.hidden=!CFG.email_otp);document.querySelectorAll('.nofb').forEach(n=>n.hidden=!!CFG.firebase);
+ $('#reg-wrap').hidden=!CFG.allow_signup;document.querySelectorAll('[data-email-wrap]').forEach(n=>n.hidden=!CFG.email_otp);document.querySelectorAll('.email-otp-off').forEach(n=>n.hidden=!!CFG.email_otp);document.querySelectorAll('.nofb').forEach(n=>n.hidden=!!CFG.firebase);
  if(keep)return;
  if(CFG.setup_needed)startRegister(true);else view('lf')}
 async function login(){note('#le','');const b=$('#lb');busy(b,1);try{enter(await jpost('/api/login',{username:$('#lu').value.trim(),password:$('#lp').value}))}catch(e){note('#le',e.message)}busy(b,0)}
@@ -280,7 +283,7 @@ wirePhone('l',fbLogin);wireEmail('l',fbLogin);
 // register: 1) verify Google email and/or mobile OTP  2) choose username + password  3) sign in
 let ptok=null;
 const rStep=n=>{$('#r1').hidden=n!==1;$('#r3').hidden=n!==3};
-function rApply(r){ptok=r.ptoken||null;const bits=[];if(r.email)bits.push('Google account '+r.email);if(r.phone)bits.push('mobile '+r.phone);
+function rApply(r){ptok=r.ptoken||null;const bits=[];if(r.email)bits.push('email address '+r.email);if(r.phone)bits.push('mobile '+r.phone);
  const txt=bits.length?'Verified: '+bits.join(' and '):'';$('#rver').textContent=txt;$('#rver3').textContent=txt;$('#rver').hidden=!bits.length;$('#rnext').hidden=!bits.length;
  $('#rgoogle').hidden=!!r.email;{const ew=$('#r-ewrap');if(ew)ew.classList.toggle('done',!!r.email)}$('#r-box').hidden=!!r.phone;$('#r-or').hidden=!!(r.email||r.phone)}
 function startRegister(setup){setupMode=!!setup;$('#rtitle').textContent=setup?'Create the administrator account':'Register';$('#rback').hidden=!!setup;rApply({});note('#re','');rStep(1);view('rf')}

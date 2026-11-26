@@ -695,6 +695,10 @@ def check_email_otp(email, code):
         raise TokenError("Too many wrong attempts. Please request a new code.")
     if not hmac.compare_digest(data["h"], _hash_otp(email, str(code).strip())):
         data["tries"] += 1
+        if data["tries"] >= 5:
+            db().execute("DELETE FROM pending WHERE token = ?", (key,))
+            db().commit()
+            raise TokenError("Too many wrong attempts. Please request a new code.")
         _pending_put(key, data)
         raise TokenError("The code is wrong.")
     db().execute("DELETE FROM pending WHERE token = ?", (key,))
@@ -771,10 +775,10 @@ def _users_exist():
 
 
 def _owner_ok(channel, value):
-    """Before the first account exists only the owner (named in config.ini) may create it."""
+    """Before the first account exists, require a configured owner contact and verify it."""
     owner_email, owner_phone = get_setting("admin_email").lower(), norm_phone(get_setting("admin_phone")) or ""
     if not (owner_email or owner_phone):
-        return True
+        return False
     return (channel == "email" and value == owner_email) or (channel == "sms" and value == owner_phone)
 
 
@@ -857,7 +861,7 @@ def firebase_login():
     if not setup and get_setting("allow_signup") != "1":
         return err(f"No account uses this {label}, and registration is closed.", 403)
     if setup and not _owner_ok(channel, value):
-        return err("Only the owner's email address or mobile number can create the first account.", 403)
+        return err("Configure the owner's contact with JP_ADMIN_EMAIL/JP_ADMIN_PHONE or in config.ini; only a verified match can create the first account.", 403)
     token, data = _start_or_extend_pending(None, channel, value)
     return jsonify(new=True, **_pending_reply(token, data))
 
@@ -880,7 +884,7 @@ def signup_verify():
         return err(f"This {label} is already registered. Please sign in.", 409)
     token = str(b.get("ptoken", ""))
     if setup and _pending_get(token) is None and not _owner_ok(channel, value):
-        return err("Only the owner's email address or mobile number can create the first account.", 403)
+        return err("Configure the owner's contact with JP_ADMIN_EMAIL/JP_ADMIN_PHONE or in config.ini; only a verified match can create the first account.", 403)
     token, data = _start_or_extend_pending(token, channel, value)
     return jsonify(ok=True, **_pending_reply(token, data))
 
@@ -1094,8 +1098,13 @@ def lan_ips():
 
 if __name__ == "__main__":
     host = os.environ.get("JP_HOST", "0.0.0.0")
-    wanted = int(os.environ.get("JP_PORT") or os.environ.get("PORT", "8085"))
-    port = free_port(host, wanted)
+    platform_port = os.environ.get("PORT")
+    if platform_port:
+        wanted = int(platform_port)
+        port = wanted
+    else:
+        wanted = int(os.environ.get("JP_PORT", "8085"))
+        port = free_port(host, wanted)
     if port != wanted:
         print(f"\n  Port {wanted} is already used by another program (maybe your older project).")
         print(f"  Using port {port} instead.")
